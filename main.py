@@ -1,7 +1,7 @@
 import asyncio
-from tehzor_api import TehzorAPI
+from tehzor.api import TehzorAPI
 from config import API_KEY, USER_ID
-from excel import result_flats
+from excel_apartments import result_flats
 
 
 async def main():     

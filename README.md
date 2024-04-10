@@ -6,7 +6,7 @@
 
 ```
 async def main():     
-    tehzor = await Tehzor_API.create(api_key=API_KEY, 
+    tehzor = await TehzorAPI.create(api_key=API_KEY, 
                                      user_id=USER_ID, 
                                      proxy=PROXIES.get("http")
                                      )
