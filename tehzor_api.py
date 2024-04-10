@@ -29,6 +29,11 @@ class TehzorAPI(object):
         
         return self
     
+
+    async def session_close(self):
+        await self.session.close() 
+
+    
     async def _handle_response(self, response: ClientResponse):
         try:    
             if response.status == 200:
@@ -50,11 +55,8 @@ class TehzorAPI(object):
         except TehzorAPIError:
             await self.session.close()
             raise
-    
-            
-    async def session_close(self):
-        await self.session.close() 
-           
+
+         
     async def get_problems(self, limit: int = 100, offset: int = 0) -> List[dict]:
         url = r"/problems"
         params = dict(userId=self.user_id, limit=limit, offset=offset)
