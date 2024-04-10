@@ -90,8 +90,8 @@ class Problem(BaseModel):
     
 
 class ProblemFilter(BaseModel):
-    objects: Optional[List[str]] = []
-    spaces: Optional[List[str]] = []
+    objects: Optional[List[str]] = [] # id строительх объектов
+    spaces: Optional[List[str]] = [] # id помещений
 
     # @field_validator('duration', mode='before')
     # def calculate_duration(cls, v, values):

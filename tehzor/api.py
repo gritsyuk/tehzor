@@ -1,6 +1,6 @@
 from aiohttp import ClientSession, ClientResponse
 from asyncio import Semaphore
-from typing import List, Optional
+from typing import List, AsyncGenerator, Optional
 from .tehzor_models import ProblemFilter
 
 class TehzorAPIError(Exception):
@@ -51,21 +51,55 @@ class TehzorAPI(object):
             elif response.status == 500:
                 raise TehzorAPIError(f"ERROR {response.status}: Server error")
             elif response.status == 502:
-                raise TehzorAPIError(f"ERROR {response.status}: Server limit exceeded 5Mb or other server error")
+                raise TehzorAPIError(f"ERROR {response.status}: Server limit exceeded 0.5 Mb or other server error")
             else:
                 raise TehzorAPIError(f"Unhandled status code: {response.status}")
         except TehzorAPIError:
             await self.session.close()
             raise
 
-         
-    async def get_problems(self, limit: int = 100, offset: int = 0, filter: Optional[ProblemFilter] = None) -> List[dict]:
+
+    async def _get_problems_chunk(self, limit: int, offset: int, filter: Optional[ProblemFilter]) -> List[dict]:
         url = r"/problems"
         params = dict(userId=self.user_id, limit=limit, offset=offset)
         filter_json = filter.model_dump() if filter else None
+
         async with self.session.get(url, params=params, proxy=self.proxy, json=filter_json) as r:
             await self._handle_response(r)
-            return await r.json()        
+            return await r.json()
+        
+
+    async def get_problems(self, limit: int = 1000000, 
+                           offset: int = 0, 
+                           filter: Optional[ProblemFilter] = None) -> AsyncGenerator[dict, None]:
+        total_problems = 0
+        total_loaded = 0
+        chunk_size = 50000
+
+        while True:
+            problems_chunk = await self._get_problems_chunk(limit, offset, filter)
+
+            if not problems_chunk:
+                break
+
+            total_problems += len(problems_chunk)
+            total_loaded += len(problems_chunk)
+
+            if total_loaded > total_problems:
+                break
+
+            for problem in problems_chunk:
+                yield problem
+
+            offset += chunk_size
+
+    # async def get_problems(self, limit: int = 100, offset: int = 0, filter: Optional[ProblemFilter] = None) -> List[dict]:
+    #     url = r"/problems"
+    #     params = dict(userId=self.user_id, limit=limit, offset=offset)
+    #     filter_json = filter.model_dump() if filter else None
+    #     async with self.session.get(url, params=params, proxy=self.proxy, json=filter_json) as r:
+    #         await self._handle_response(r)
+    #         return await r.json()        
     
 
     async def get_problem(self, id: str) -> dict:

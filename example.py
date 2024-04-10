@@ -14,8 +14,8 @@ async def main():
         objects=["64c0fdfe46c4793df12beead"]
         )
 
-    res = await tehzor.get_problems(filter=filters)
-    pprint(res)
+    async for res in tehzor.get_problems(limit=2, filter=filters):
+        pprint(res)
 
     await tehzor.session_close()
 
