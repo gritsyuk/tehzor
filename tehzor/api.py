@@ -1,7 +1,7 @@
 from aiohttp import ClientSession, ClientResponse
 from asyncio import Semaphore
 from typing import List, AsyncGenerator, Optional
-from .tehzor_models import ProblemFilter
+from .models_thz import ProblemFilter
 
 class TehzorAPIError(Exception):
     pass
@@ -69,7 +69,7 @@ class TehzorAPI(object):
             return await r.json()
         
 
-    async def get_problems(self, limit: int = 1000000, 
+    async def get_problems(self, limit: int = 50000, 
                            offset: int = 0, 
                            filter: Optional[ProblemFilter] = None) -> AsyncGenerator[dict, None]:
         total_problems = 0

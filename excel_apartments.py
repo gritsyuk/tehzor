@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from tehzor.tehzor_models import Space
+from tehzor.models_thz import Space
 
 df = pd.read_excel( io = 'flat.xlsx')
 

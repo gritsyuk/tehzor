@@ -53,6 +53,7 @@ class Constraction(Status):
 class Category(Status):
     pass
 
+
 class Problem(BaseModel):
     id: str
     object: Constraction
@@ -69,10 +70,10 @@ class Problem(BaseModel):
     description: Optional[str] = None
     prescription: Optional[str] = None
     attachments: Optional[List[Attachment]] = None
-    respUsers: Optional[List[User]] = None
-    watchers: Optional[List[User]] = None
+    respUsers: Optional[List[User | str]] = None
+    watchers: Optional[List[User | str]] = None
     activeGroup: Optional[str] = None
-    activeGroupLeader: Optional[User] = None
+    activeGroupLeader: Optional[User | str] = None
     initialGroup: Optional[str] = None
     initialGroupLeader: Optional[User] = None
     critical: Optional[bool] = None
@@ -98,14 +99,3 @@ class ProblemFilter(BaseModel):
     #     if 'createdAt' in values and 'modifiedAt' in values:
     #         return int((values['modifiedAt'] - values['createdAt']))
     #     return v
-    
-
-# class ProblemDb(BaseModel):
-#     id: str
-#     object:
-#     name:
-#     stage:
-#     number:
-#     status:
-#     category: Category
-#     createdAt: datetime
