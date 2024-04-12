@@ -64,7 +64,11 @@ class TehzorAPI(object):
         params = dict(userId=self.user_id, limit=limit, offset=offset)
         filter_json = filter.model_dump() if filter else None
 
-        async with self.session.get(url, params=params, proxy=self.proxy, json=filter_json) as r:
+        async with self.session.get(url, 
+                                    params=params, 
+                                    proxy=self.proxy, 
+                                    json=filter_json,
+                                    verify_ssl=False) as r:
             await self._handle_response(r)
             return await r.json()
         
@@ -104,21 +108,28 @@ class TehzorAPI(object):
 
     async def get_problem(self, id: str) -> dict:
         url = fr"/problems/{id}"
-        async with self.session.get(url, proxy=self.proxy) as r:
+        async with self.session.get(url, 
+                                    proxy=self.proxy,
+                                    verify_ssl=False) as r:
             assert r.status == 200
             return await r.json()
         
 
     async def update_problem(self, id: str, data: dict):
         url = fr"/problems/{id}"
-        async with self.session.post(url, data = data, proxy=self.proxy) as r:
+        async with self.session.post(url, 
+                                     data = data, 
+                                     proxy=self.proxy,
+                                     verify_ssl=False) as r:
             assert r.status == 201 
             return await r.json()
 
 
     async def get_contract_forms(self) -> dict:
         url = r"/contract-forms"
-        async with self.session.get(url, proxy=self.proxy) as r:
+        async with self.session.get(url, 
+                                    proxy=self.proxy, 
+                                    verify_ssl=False) as r:
             assert r.status == 200
             return await r.json()
     
@@ -126,12 +137,18 @@ class TehzorAPI(object):
     async def create_owners(self, data: dict):
         url = fr"/space-owners"
         async with self.semaphore:
-            async with self.session.post(url, data = data, proxy=self.proxy) as r:
+            async with self.session.post(url, 
+                                         data = data, 
+                                         proxy=self.proxy, 
+                                         verify_ssl=False) as r:
                 assert r.status == 201
     
 
     async def update_spaces(self, id: str, data: dict):
         url = fr"/spaces/{id}"
         async with self.semaphore:
-            async with self.session.post(url, data = data, proxy=self.proxy) as r:
+            async with self.session.post(url, 
+                                         data = data, 
+                                         proxy=self.proxy, 
+                                         verify_ssl=False) as r:
                 assert r.status == 201

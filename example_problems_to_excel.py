@@ -12,7 +12,7 @@ async def main():
     data = []
 
     # construct_keys = ["beside1_1_1", "beside1_1_2", "beside1_2_1", "beside1_2_2"]
-    construct_keys = ["mitino_k18_1", "mitino_k18_2", "mitino_k18_3", "mitino_k18_4"]
+    construct_keys = ["mitino_k18_1"]
     filters = tehzorModel.ProblemFilter(
         objects=[CONSTRUCTION[id] for id in construct_keys]
         )
