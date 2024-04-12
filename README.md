@@ -11,7 +11,7 @@ pip install tehzor
 
 ## Примеры
 Обновления параметров квартир (площадь, плащадь БТИ, тип отделки). Предварительно необходимо знать id квартир и id типа отделки:
-<pre><code>
+```python
 from tehzor import TehzorAPI
 
 API_KEY = "00000000-0000-0000-0000-000000000000"
@@ -28,5 +28,5 @@ async def main():
 
 if __name__ == "__main__":    
     asyncio.run(main())
-</code></pre>
+```
 
