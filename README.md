@@ -1,11 +1,11 @@
-# Техзор
+# ![logo](https://tehzor.com/images/components/Header/logo.svg)
 ## Обертка над  API системы [Техзор](https://api.tehzor.ru/docs) на python
 Официальная документация [https://api.tehzor.ru/docs](https://api.tehzor.ru/docs)
 
 ## Установка
 
 ```sh
-pip install --upgrade tehzor
+pip install tehzor
 ```
 
 ## Примеры
