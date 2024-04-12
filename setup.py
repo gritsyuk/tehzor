@@ -12,10 +12,10 @@ setup(
   author='Igor Gritsyuk',
   author_email='gritsyuk.igor@gmail.com',
   description='A Python API wrapper for Tehzor API',
-  download_url='https://github.com/gritsyuk/tehzor_api/archive/refs/heads/develop.zip',
+  download_url='https://github.com/gritsyuk/tehzor/archive/refs/heads/develop.zip',
   long_description=readme(),
   long_description_content_type='text/markdown',
-  url='https://github.com/gritsyuk/tehzor_api',
+  url='https://github.com/gritsyuk/tehzor',
   packages=find_packages(),
   install_requires=['aiohttp>=3.9.3', 'pydantic[email]>=2.6.4'],
   classifiers=[
@@ -25,7 +25,7 @@ setup(
   ],
   keywords='tehzor api tehzorapi construction supervision operation inspections constarctionsite building management',
   project_urls={
-    'GitHub': 'https://github.com/gritsyuk/tehzor_api'
+    'GitHub': 'https://github.com/gritsyuk/tehzor'
   },
   python_requires='>=3.6'
 )
