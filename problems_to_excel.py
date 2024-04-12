@@ -1,7 +1,7 @@
 import asyncio
 import pandas as pd
 import tehzor.models_thz as tehzorModel
-from tehzor.api import TehzorAPI
+from tehzor import TehzorAPI
 from tehzor.constants_thz import CONSTRUCT_STAGES
 from config import API_KEY, USER_ID, CONSTRUCTION
 

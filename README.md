@@ -5,7 +5,7 @@
 ## Установка
 
 ```sh
-pip install tehzor
+pip install --upgrade tehzor
 ```
 
 ## Примеры
@@ -13,11 +13,15 @@ pip install tehzor
 Предварительно необходимо знать id квартир и id типа отделки.
 
 ```
+from tehzor import TehzorAPI
+
+API_KEY = "00000000-0000-0000-0000-000000000000"
+USER_ID = "123d7cdfc7ea123d123456ab"
+
 async def main():     
     tehzor = await TehzorAPI.create(api_key=API_KEY, 
-                                     user_id=USER_ID, 
-                                     proxy=PROXIES.get("http")
-                                     )
+                                    user_id=USER_ID
+                                    )
     async with asyncio.TaskGroup() as tg:
         for id, data in result_flats.items():
             tg.create_task(tehzor.update_spaces(id, data.model_dump_json()))

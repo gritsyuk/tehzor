@@ -3,21 +3,21 @@ from datetime import datetime
 from pydantic import (BaseModel,
                       field_validator, 
                       EmailStr)
-from typing import List, Optional, Any
+from typing import List, Optional
 
 
 class Space(BaseModel):
     plannedArea: float
     areaBTI: float
-    typeDecoration: str | None
+    typeDecoration: Optional[str | None]
 
 class Owner(BaseModel):
     name: str
     email: EmailStr | None
-    additionalEmail: EmailStr | None
-    phone: str | None
-    additionalPhone: str | None
-    comment: str | None
+    additionalEmail: Optional[EmailStr | None]
+    phone: Optional[str | None]
+    additionalPhone: Optional[str | None]
+    comment: Optional[str | None]
     spaces: List[str]
     
     @field_validator("email")

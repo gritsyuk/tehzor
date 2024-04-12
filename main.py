@@ -1,5 +1,5 @@
 import asyncio
-from tehzor.api import TehzorAPI
+from tehzor import TehzorAPI
 from config import API_KEY, USER_ID
 from excel_apartments import result_flats
 

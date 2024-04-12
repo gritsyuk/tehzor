@@ -17,7 +17,7 @@ setup(
   long_description_content_type='text/markdown',
   url='https://github.com/gritsyuk/tehzor_api',
   packages=find_packages(),
-  install_requires=['requests>=2.25.1'],
+  install_requires=['aiohttp>=3.9.3', 'pydantic[email]>=2.6.4'],
   classifiers=[
     'Programming Language :: Python :: 3.11',
     'License :: OSI Approved :: MIT License',

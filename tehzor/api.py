@@ -134,5 +134,4 @@ class TehzorAPI(object):
         url = fr"/spaces/{id}"
         async with self.semaphore:
             async with self.session.post(url, data = data, proxy=self.proxy) as r:
-                # print(r.status,'   ',id, ' ----->  ', data)
                 assert r.status == 201
