@@ -1,10 +1,9 @@
 # ![logo Tehzor](https://tehzor.com/images/components/Header/logo.svg)
-
+![PyPI - Version](https://img.shields.io/pypi/v/tehzor)
 ## Обертка над  API системы Техзор на python (async/await)
 Официальная документация [https://api.tehzor.ru/docs](https://api.tehzor.ru/docs)
 
 ## Установка
-
 ```bash
 pip install tehzor
 ```
