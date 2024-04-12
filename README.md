@@ -13,6 +13,8 @@ pip install tehzor
 Обновления параметров квартир (площадь, плащадь БТИ, тип отделки). Предварительно необходимо знать id квартир и id типа отделки:
 ```python
 from tehzor import TehzorAPI
+from excel_apartments import result_flats
+
 
 API_KEY = "00000000-0000-0000-0000-000000000000"
 USER_ID = "123d7cdfc7ea123d123456ab"
