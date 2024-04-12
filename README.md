@@ -1,5 +1,6 @@
-# ![logo](https://tehzor.com/images/components/Header/logo.svg)
-## Обертка над  API системы [Техзор](https://api.tehzor.ru/docs) на python
+# ![logo Tehzor](https://tehzor.com/images/components/Header/logo.svg)
+
+## Обертка над  API системы Техзор на python (asyn/await)
 Официальная документация [https://api.tehzor.ru/docs](https://api.tehzor.ru/docs)
 
 ## Установка
@@ -9,10 +10,8 @@ pip install tehzor
 ```
 
 ## Примеры
-В примере ниже обновления параметров квартир (площадь, плащадь БТИ, тип отделки) POST запросами API в асинхронном режиме.
-Предварительно необходимо знать id квартир и id типа отделки.
-
-```
+Обновления параметров квартир (площадь, плащадь БТИ, тип отделки). Предварительно необходимо знать id квартир и id типа отделки:
+<pre><code>
 from tehzor import TehzorAPI
 
 API_KEY = "00000000-0000-0000-0000-000000000000"
@@ -29,6 +28,5 @@ async def main():
 
 if __name__ == "__main__":    
     asyncio.run(main())
-```
-
+</code></pre>
 
