@@ -1,7 +1,8 @@
 from aiohttp import ClientSession, ClientResponse
 from asyncio import Semaphore
 from typing import List, AsyncGenerator, Optional
-from .models_thz import ProblemFilter
+from .models_thz import ProblemFilter, Problem, WorkAcceptances
+
 
 class TehzorAPIError(Exception):
     pass
@@ -10,35 +11,33 @@ class TehzorAPIError(Exception):
 class TehzorAPI(object):
     def __init__(self) -> None:
         pass
-    
+
     @classmethod
-    async def create(cls, 
-                     api_key: str, 
-                     url_api: str = "https://api.tehzor.ru", 
-                     user_id: str = None, 
+    async def create(cls,
+                     api_key: str,
+                     url_api: str = "https://api.tehzor.ru",
+                     user_id: str = None,
                      proxy: str = None,
                      limit_threads: int = 25):
         self = cls()
         self.url_api = url_api
-        self.user_id = user_id 
-        self.headers =  {
-                        "Content-Type": "application/json",
-                        "api-key": api_key
-                        }
+        self.user_id = user_id
+        self.headers = {
+            "Content-Type": "application/json",
+            "api-key": api_key
+        }
         self.proxy = proxy
-        self.semaphore = Semaphore(limit_threads)  
+        self.semaphore = Semaphore(limit_threads)
         self.session = ClientSession(base_url=self.url_api, headers=self.headers)
-        
+
         return self
-    
 
     async def session_close(self):
-        await self.session.close() 
+        await self.session.close()
 
-    
     async def _handle_response(self, response: ClientResponse):
-        try:    
-            if response.status == 200:
+        try:
+            if response.status == 200 or response.status == 201:
                 return
             elif response.status == 400:
                 raise TehzorAPIError(f"ERROR {response.status}: Error while fetching the violation list")
@@ -58,23 +57,21 @@ class TehzorAPI(object):
             await self.session.close()
             raise
 
-
     async def _get_problems_chunk(self, limit: int, offset: int, filter: Optional[ProblemFilter]) -> List[dict]:
         url = r"/problems"
         params = dict(userId=self.user_id, limit=limit, offset=offset)
         filter_json = filter.model_dump() if filter else None
 
-        async with self.session.get(url, 
-                                    params=params, 
-                                    proxy=self.proxy, 
+        async with self.session.get(url,
+                                    params=params,
+                                    proxy=self.proxy,
                                     json=filter_json,
                                     verify_ssl=False) as r:
             await self._handle_response(r)
             return await r.json()
-        
 
-    async def get_problems(self, limit: int = 50000, 
-                           offset: int = 0, 
+    async def get_problems(self, limit: int = 50000,
+                           offset: int = 0,
                            filter: Optional[ProblemFilter] = None) -> AsyncGenerator[dict, None]:
         total_problems = 0
         total_loaded = 0
@@ -104,51 +101,58 @@ class TehzorAPI(object):
     #     async with self.session.get(url, params=params, proxy=self.proxy, json=filter_json) as r:
     #         await self._handle_response(r)
     #         return await r.json()        
-    
 
-    async def get_problem(self, id: str) -> dict:
+    async def get_problem(self, id: str) -> Problem:
+        url = f"/problems/{id}"
+        async with self.session.get(url,
+                                    proxy=self.proxy,
+                                    verify_ssl=False) as r:
+            await self._handle_response(r)
+            res_json = await r.json()
+
+            return Problem.model_validate(res_json)
+
+    async def get_work_acceptances(self, id: str) -> WorkAcceptances:
+        url = f"/work-acceptances/{id}"
+        async with self.session.get(url,
+                                    proxy=self.proxy,
+                                    verify_ssl=False) as r:
+            await self._handle_response(r)
+            res_json = await r.json()
+            res_json['object'] = dict()
+            return WorkAcceptances.model_validate(res_json)
+
+    async def update_problem(self, id: str, data: dict):
         url = fr"/problems/{id}"
-        async with self.session.get(url, 
+        async with self.session.post(url,
+                                     data=data,
+                                     proxy=self.proxy,
+                                     verify_ssl=False) as r:
+            assert r.status == 201
+            return await r.json()
+
+    async def get_contract_forms(self) -> dict:
+        url = r"/contract-forms"
+        async with self.session.get(url,
                                     proxy=self.proxy,
                                     verify_ssl=False) as r:
             assert r.status == 200
             return await r.json()
-        
-
-    async def update_problem(self, id: str, data: dict):
-        url = fr"/problems/{id}"
-        async with self.session.post(url, 
-                                     data = data, 
-                                     proxy=self.proxy,
-                                     verify_ssl=False) as r:
-            assert r.status == 201 
-            return await r.json()
-
-
-    async def get_contract_forms(self) -> dict:
-        url = r"/contract-forms"
-        async with self.session.get(url, 
-                                    proxy=self.proxy, 
-                                    verify_ssl=False) as r:
-            assert r.status == 200
-            return await r.json()
-    
 
     async def create_owners(self, data: dict):
         url = fr"/space-owners"
         async with self.semaphore:
-            async with self.session.post(url, 
-                                         data = data, 
-                                         proxy=self.proxy, 
+            async with self.session.post(url,
+                                         data=data,
+                                         proxy=self.proxy,
                                          verify_ssl=False) as r:
                 assert r.status == 201
-    
 
     async def update_spaces(self, id: str, data: dict):
         url = fr"/spaces/{id}"
         async with self.semaphore:
-            async with self.session.post(url, 
-                                         data = data, 
-                                         proxy=self.proxy, 
+            async with self.session.post(url,
+                                         data=data,
+                                         proxy=self.proxy,
                                          verify_ssl=False) as r:
                 assert r.status == 201

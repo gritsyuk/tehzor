@@ -1,15 +1,18 @@
 import re
 from datetime import datetime
-from pydantic import (BaseModel,
-                      field_validator, 
-                      EmailStr)
+from pydantic import (
+                      BaseModel,
+                      field_validator,
+                      EmailStr
+                      )
 from typing import List, Optional
 
 
 class Space(BaseModel):
     plannedArea: float
     areaBTI: float
-    typeDecoration: Optional[str | None]
+    typeDecoration: Optional[str | None] = None
+
 
 class Owner(BaseModel):
     name: str
@@ -19,7 +22,7 @@ class Owner(BaseModel):
     additionalPhone: Optional[str | None]
     comment: Optional[str | None]
     spaces: List[str]
-    
+
     @field_validator("email")
     def validate_email(cls, value):
         if value:
@@ -27,28 +30,32 @@ class Owner(BaseModel):
                 raise ValueError("Email is invalid")
             return value
         else:
-            return None 
+            return None
 
- 
+
 class Attachment(BaseModel):
     id: str
     preview: Optional[dict] = None
     full: Optional[dict] = None
     size: Optional[int] = None
 
+
 class User(BaseModel):
     id: str
-    fullName: str
-    displayName: str
-    position: str
-    color: str
+    fullName: Optional[str]
+    displayName: Optional[str] = None
+    position: Optional[str] = None
+    color: Optional[str] = None
+
 
 class Status(BaseModel):
-    id: str
-    name: str
+    id: Optional[str] = None
+    name: Optional[str] = None
 
-class Constraction(Status):
+
+class Construction(Status):
     pass
+
 
 class Category(Status):
     pass
@@ -56,7 +63,7 @@ class Category(Status):
 
 class Problem(BaseModel):
     id: str
-    object: Constraction
+    object: Construction
     links: Optional[dict] = None
     stage: str
     number: int
@@ -81,21 +88,34 @@ class Problem(BaseModel):
     createdBy: User
     modifiedAt: int
     modifiedBy: User
-    duration: Optional[int] = None
 
     @field_validator('createdAt', 'modifiedAt', mode='after')
     def convert_timestamps_to_datetime(cls, value):
         if isinstance(value, int):
             return datetime.fromtimestamp(value / 1000)
         return value
-    
+
 
 class ProblemFilter(BaseModel):
-    objects: Optional[List[str]] = [] # id строительх объектов
-    spaces: Optional[List[str]] = [] # id помещений
+    objects: Optional[List[str]] = []  # id строительх объектов
+    spaces: Optional[List[str]] = []  # id помещений
 
-    # @field_validator('duration', mode='before')
-    # def calculate_duration(cls, v, values):
-    #     if 'createdAt' in values and 'modifiedAt' in values:
-    #         return int((values['modifiedAt'] - values['createdAt']))
-    #     return v
+
+class WorkScope(BaseModel):
+    value: Optional[str] = None
+    unitId: Optional[str] = None
+    unitName: Optional[str] = None
+
+
+class WorkAcceptances(Problem):
+    class Config:
+        exclude = {'object'}
+    objectId: str
+    structureIds: List[str]
+    spaceIds: List[str]
+    acceptanceDate: int
+    percent: Optional[float] = 0.0
+    comment: Optional[str] = None
+    physicalWorkScope: Optional[WorkScope] = None
+    type: Optional[str]
+    frontType: Optional[str]
