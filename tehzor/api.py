@@ -94,7 +94,7 @@ class TehzorAPI(object):
 
             offset += chunk_size
 
-    # async def get_problems(self, limit: int = 100, offset: int = 0, filter: Optional[ProblemFilter] = None) -> List[dict]:
+    # async def get_problems(self, limit: int = 100, offset: int = 0, filter: Optional[ProblemFilter] = None) -> List[Problem]:
     #     url = r"/problems"
     #     params = dict(userId=self.user_id, limit=limit, offset=offset)
     #     filter_json = filter.model_dump() if filter else None
@@ -128,6 +128,15 @@ class TehzorAPI(object):
                                      data=data,
                                      proxy=self.proxy,
                                      verify_ssl=False) as r:
+            assert r.status == 201
+            return await r.json()
+    
+    # async def create_problem(self, data: ProblemNew) -> Problem:
+    #     url = fr"/problems"
+    #     async with self.session.post(url,
+    #                                  data=data,
+    #                                  proxy=self.proxy,
+    #                                  verify_ssl=False) as r:
             assert r.status == 201
             return await r.json()
 

@@ -60,11 +60,24 @@ class Construction(Status):
 class Category(Status):
     pass
 
+class ProblemLinks(BaseModel):
+    spaceId: Optional[str] = None
+    checkId: Optional[str] = None
+    internalAcceptanceId: Optional[str] = None
+    ownerAcceptanceId: Optional[str] = None
+    warrantyClaimId: Optional[str] = None
+    checkListId: Optional[str] = None
+    checkItemId: Optional[str] = None
+    checkRecordId: Optional[str] = None
+    taskId: Optional[str] = None
+    templateId: Optional[str] = None
+    structureId: Optional[str] = None
+    workAcceptanceId: Optional[str] = None
 
 class Problem(BaseModel):
     id: str
     object: Construction
-    links: Optional[dict] = None
+    links: Optional[ProblemLinks] = None
     stage: str
     number: int
     status: Status
@@ -100,6 +113,17 @@ class ProblemFilter(BaseModel):
     objects: Optional[List[str]] = []  # id строительх объектов
     spaces: Optional[List[str]] = []  # id помещений
 
+# class ProblemNew(BaseModel):
+#     links: Optional[ProblemLinks] = None
+#     categoryId: str | dict = None
+#     stage: str
+#     plannedFixDate: Optional[int] = 0
+#     reason: dict
+#     description: Optional[str] = None
+#     prescription: Optional[str] = None
+#     attachments: Optional[List[Attachment]] = None
+#     planId: Optional[str] = None
+#     floor: Optional[str] = None
 
 class WorkScope(BaseModel):
     value: Optional[str] = None
@@ -108,8 +132,8 @@ class WorkScope(BaseModel):
 
 
 class WorkAcceptances(Problem):
-    class Config:
-        exclude = {'object'}
+    # class model_config:
+    #     exclude = {'object'}
     objectId: str
     structureIds: List[str]
     spaceIds: List[str]
