@@ -57,51 +57,6 @@ class TehzorAPI(object):
             await self.session.close()
             raise
 
-    async def _get_problems_chunk(self, limit: int, offset: int, filter: Optional[ProblemFilter]) -> List[dict]:
-        url = r"/problems"
-        params = dict(userId=self.user_id, limit=limit, offset=offset)
-        filter_json = filter.model_dump() if filter else None
-
-        async with self.session.get(url,
-                                    params=params,
-                                    proxy=self.proxy,
-                                    json=filter_json,
-                                    verify_ssl=False) as r:
-            await self._handle_response(r)
-            return await r.json()
-
-    async def get_problems(self, limit: int = 50000,
-                           offset: int = 0,
-                           filter: Optional[ProblemFilter] = None) -> AsyncGenerator[dict, None]:
-        total_problems = 0
-        total_loaded = 0
-        chunk_size = 50000
-
-        while True:
-            problems_chunk = await self._get_problems_chunk(limit, offset, filter)
-
-            if not problems_chunk:
-                break
-
-            total_problems += len(problems_chunk)
-            total_loaded += len(problems_chunk)
-
-            if total_loaded > total_problems:
-                break
-
-            for problem in problems_chunk:
-                yield problem
-
-            offset += chunk_size
-
-    # async def get_problems(self, limit: int = 100, offset: int = 0, filter: Optional[ProblemFilter] = None) -> List[Problem]:
-    #     url = r"/problems"
-    #     params = dict(userId=self.user_id, limit=limit, offset=offset)
-    #     filter_json = filter.model_dump() if filter else None
-    #     async with self.session.get(url, params=params, proxy=self.proxy, json=filter_json) as r:
-    #         await self._handle_response(r)
-    #         return await r.json()        
-
     async def get_problem(self, id: str) -> Problem:
         url = f"/problems/{id}"
         async with self.session.get(url,
@@ -112,6 +67,27 @@ class TehzorAPI(object):
 
             return Problem.model_validate(res_json)
 
+    async def get_problems(self,
+                           user_id: str = None,  
+                           limit: int = 50000, 
+                           offset: int = 0, 
+                           filter: Optional[ProblemFilter] = None) -> AsyncGenerator[Problem, None]:
+        url = r"/problems"
+        if not user_id and self.user_id:
+            user_id = self.user_id
+        params = dict(userId=user_id,
+                      limit=limit, 
+                      offset=offset)
+        filter_json = filter.model_dump() if filter else None
+        async with self.session.get(url, 
+                                    params=params, 
+                                    proxy=self.proxy, 
+                                    json=filter_json) as r:
+            await self._handle_response(r)
+            res_json = await r.json()
+            for data in res_json:
+                yield Problem.model_validate(data)
+    
     async def get_work_acceptance(self, id: str) -> WorkAcceptances:
         url = f"/work-acceptances/{id}"
         async with self.session.get(url,
@@ -119,18 +95,25 @@ class TehzorAPI(object):
                                     verify_ssl=False) as r:
             await self._handle_response(r)
             res_json = await r.json()
-            res_json['object'] = dict()
             return WorkAcceptances.model_validate(res_json)
 
-    async def get_work_acceptances(self) -> AsyncGenerator[WorkAcceptances, None]:
+    async def get_work_acceptances(self,*,
+                                   objectId: str = "",
+                                   limit: int = 50000,
+                                   offset: int = 0,
+                                   ) -> AsyncGenerator[WorkAcceptances, None]:
         url = "/work-acceptances"
+        params = dict(objectId=objectId, 
+                      limit=limit, 
+                      offset=offset)
         async with self.session.get(url,
+                                    params=params,
                                     proxy=self.proxy,
                                     verify_ssl=False) as r:
             await self._handle_response(r)
             res_json = await r.json()
-            res_json['object'] = dict()
-            return WorkAcceptances.model_validate(res_json)
+            for data in res_json:
+                yield WorkAcceptances.model_validate(data)
 
     async def update_problem(self, id: str, data: dict):
         url = fr"/problems/{id}"
@@ -147,8 +130,8 @@ class TehzorAPI(object):
     #                                  data=data,
     #                                  proxy=self.proxy,
     #                                  verify_ssl=False) as r:
-            assert r.status == 201
-            return await r.json()
+            # assert r.status == 201
+            # return await r.json()
 
     async def get_contract_forms(self) -> dict:
         url = r"/contract-forms"

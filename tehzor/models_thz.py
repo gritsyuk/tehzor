@@ -2,6 +2,7 @@ import re
 from datetime import datetime
 from pydantic import (
                       BaseModel,
+                      Field,
                       field_validator,
                       EmailStr
                       )
@@ -42,7 +43,7 @@ class Attachment(BaseModel):
 
 class User(BaseModel):
     id: str
-    fullName: Optional[str]
+    fullName: Optional[str] = None
     displayName: Optional[str] = None
     position: Optional[str] = None
     color: Optional[str] = None
@@ -76,7 +77,7 @@ class ProblemLinks(BaseModel):
 
 class Problem(BaseModel):
     id: str
-    object: Construction
+    object: Optional[Construction] = Field(default=None, exclude = True)
     links: Optional[ProblemLinks] = None
     stage: str
     number: int
@@ -98,9 +99,9 @@ class Problem(BaseModel):
     initialGroupLeader: Optional[User] = None
     critical: Optional[bool] = None
     createdAt: int
-    createdBy: User
+    createdBy: Optional[User] = None
     modifiedAt: int
-    modifiedBy: User
+    modifiedBy: Optional[User] = None
 
     @field_validator('createdAt', 'modifiedAt', mode='after')
     def convert_timestamps_to_datetime(cls, value):
@@ -132,8 +133,6 @@ class WorkScope(BaseModel):
 
 
 class WorkAcceptances(Problem):
-    # class model_config:
-    #     exclude = {'object'}
     objectId: str
     structureIds: List[str]
     spaceIds: List[str]
@@ -141,5 +140,5 @@ class WorkAcceptances(Problem):
     percent: Optional[float] = 0.0
     comment: Optional[str] = None
     physicalWorkScope: Optional[WorkScope] = None
-    type: Optional[str]
+    type: Optional[str] = None
     frontType: Optional[str]
