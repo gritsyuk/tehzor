@@ -112,8 +112,18 @@ class TehzorAPI(object):
 
             return Problem.model_validate(res_json)
 
-    async def get_work_acceptances(self, id: str) -> WorkAcceptances:
+    async def get_work_acceptance(self, id: str) -> WorkAcceptances:
         url = f"/work-acceptances/{id}"
+        async with self.session.get(url,
+                                    proxy=self.proxy,
+                                    verify_ssl=False) as r:
+            await self._handle_response(r)
+            res_json = await r.json()
+            res_json['object'] = dict()
+            return WorkAcceptances.model_validate(res_json)
+
+    async def get_work_acceptances(self) -> AsyncGenerator[WorkAcceptances, None]:
+        url = "/work-acceptances"
         async with self.session.get(url,
                                     proxy=self.proxy,
                                     verify_ssl=False) as r:
