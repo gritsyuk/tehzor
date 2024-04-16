@@ -1,9 +1,10 @@
 import asyncio
 import pandas as pd
-import tehzor.models_thz as tehzorModel
+from tehzor.models import Problem
 from tehzor import TehzorAPI
-from tehzor.constants_thz import CONSTRUCT_STAGES
+from tehzor.constants import CONSTRUCT_STAGES
 from config import API_KEY, USER_ID, CONSTRUCTION
+
 
 async def main():     
     tehzor = await TehzorAPI.create(api_key=API_KEY, 
@@ -18,7 +19,7 @@ async def main():
         )
     try:
         async for problem in tehzor.get_problems(limit=50000, filter=filters):
-            valid_problem = tehzorModel.Problem.model_validate(problem)
+            valid_problem = Problem.model_validate(problem)
             url_problem = f'=HYPERLINK("https://app.tehzor.ru/objects/{valid_problem.object.id}/problems/{valid_problem.id}", "Открыть")'
             stage_problem = CONSTRUCT_STAGES.get(valid_problem.stage).get("name")       
             fields = (

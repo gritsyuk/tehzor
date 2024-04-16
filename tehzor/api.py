@@ -1,7 +1,7 @@
 from aiohttp import ClientSession, ClientResponse
 from asyncio import Semaphore
 from typing import List, AsyncGenerator, Optional
-from .models_thz import ProblemFilter, Problem, WorkAcceptances
+from .models import ProblemFilter, Problem, WorkAcceptances
 
 
 class TehzorAPIError(Exception):
@@ -69,7 +69,7 @@ class TehzorAPI(object):
 
     async def get_problems(self,
                            user_id: str = None,  
-                           limit: int = 50000, 
+                           limit: int = 50000,
                            offset: int = 0, 
                            filter: Optional[ProblemFilter] = None) -> AsyncGenerator[Problem, None]:
         url = r"/problems"
@@ -97,13 +97,13 @@ class TehzorAPI(object):
             res_json = await r.json()
             return WorkAcceptances.model_validate(res_json)
 
-    async def get_work_acceptances(self,*,
-                                   objectId: str = "",
+    async def get_work_acceptances(self,
+                                   object_id: str= "",
                                    limit: int = 50000,
                                    offset: int = 0,
                                    ) -> AsyncGenerator[WorkAcceptances, None]:
         url = "/work-acceptances"
-        params = dict(objectId=objectId, 
+        params = dict(objectId=object_id,
                       limit=limit, 
                       offset=offset)
         async with self.session.get(url,

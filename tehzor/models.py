@@ -1,12 +1,12 @@
 import re
+from typing import List, Optional
 from datetime import datetime
 from pydantic import (
-                      BaseModel,
-                      Field,
-                      field_validator,
-                      EmailStr
-                      )
-from typing import List, Optional
+    BaseModel,
+    Field,
+    field_validator,
+    EmailStr
+)
 
 
 class Space(BaseModel):
@@ -61,6 +61,7 @@ class Construction(Status):
 class Category(Status):
     pass
 
+
 class ProblemLinks(BaseModel):
     spaceId: Optional[str] = None
     checkId: Optional[str] = None
@@ -75,9 +76,10 @@ class ProblemLinks(BaseModel):
     structureId: Optional[str] = None
     workAcceptanceId: Optional[str] = None
 
+
 class Problem(BaseModel):
     id: str
-    object: Optional[Construction] = Field(default=None, exclude = True)
+    object: Optional[Construction] = Field(default=None, exclude=True)
     links: Optional[ProblemLinks] = None
     stage: str
     number: int
@@ -113,6 +115,7 @@ class Problem(BaseModel):
 class ProblemFilter(BaseModel):
     objects: Optional[List[str]] = []  # id строительх объектов
     spaces: Optional[List[str]] = []  # id помещений
+
 
 # class ProblemNew(BaseModel):
 #     links: Optional[ProblemLinks] = None

@@ -5,8 +5,8 @@ from config import USER_ID
 
 @pytest.mark.asyncio
 async def test_api_create_unauthorized():
-    API_KEY = "no-no"
-    thz = await TehzorAPI.create(api_key=API_KEY,
+    api_key = "no-no"
+    thz = await TehzorAPI.create(api_key=api_key,
                                  user_id=USER_ID
                                  )
     try:

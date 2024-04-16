@@ -1,6 +1,6 @@
 import asyncio
 from tehzor.api import TehzorAPI
-import tehzor.models_thz as tehzorModel
+from tehzor.models import ProblemFilter
 from config import API_KEY, USER_ID
 from pprint import pprint
 
@@ -10,7 +10,7 @@ async def main():
                                     user_id=USER_ID
                                     )
 
-    filters = tehzorModel.ProblemFilter(
+    filters = ProblemFilter(
         objects=["641ef54d1ba6ce0024681763"]
         )
 

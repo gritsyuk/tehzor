@@ -1,6 +1,6 @@
 import pytest
 from tehzor.api import TehzorAPI, TehzorAPIError
-from tehzor.models_thz import Problem
+from tehzor.models import Problem
 from config import API_KEY, USER_ID
 
 
