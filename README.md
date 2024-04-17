@@ -9,7 +9,7 @@ pip install tehzor
 ```
 
 ## Примеры
-Обновления параметров квартир (площадь, плащадь БТИ, тип отделки). Предварительно необходимо знать id квартир и id типа отделки:
+Обновления параметров квартир (площадь, плащадь БТИ, тип отделки ...). Предварительно необходимо знать id квартир и id типа отделки:
 ```python
 from tehzor import TehzorAPI
 from excel_apartments import result_flats
@@ -20,12 +20,12 @@ USER_ID = "123d7cdfc7ea123d123456ab"
 
 
 async def main():     
-    thz = await TehzorAPI.create(api_key=API_KEY, 
-                                 user_id=USER_ID
-                                )
+    thz = await TehzorAPI.create(api_key=API_KEY, user_id=USER_ID)
+    
     async with asyncio.TaskGroup() as tg:
         for id, data in result_flats.items():
             tg.create_task(thz.update_spaces(id, data.model_dump_json()))
+
     await thz.session_close()
 
 
