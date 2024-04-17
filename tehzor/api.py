@@ -1,7 +1,11 @@
 from aiohttp import ClientSession, ClientResponse
 from asyncio import Semaphore
 from typing import List, AsyncGenerator, Optional
-from .models import ProblemFilter, Problem, WorkAcceptances
+from .models import (ProblemFilter, 
+                     Problem, 
+                     WorkAcceptances, 
+                     Space, 
+                     SpaceMeters)
 
 
 class TehzorAPIError(Exception):
@@ -40,7 +44,7 @@ class TehzorAPI(object):
             if response.status == 200 or response.status == 201:
                 return
             elif response.status == 400:
-                raise TehzorAPIError(f"ERROR {response.status}: Error while fetching the violation list")
+                raise TehzorAPIError(f"ERROR {response.status}: Error while fetching")
             elif response.status == 401:
                 raise TehzorAPIError(f"ERROR {response.status}: Unauthorized (api-key not provided)")
             elif response.status == 403:
@@ -149,7 +153,29 @@ class TehzorAPI(object):
                                          proxy=self.proxy,
                                          verify_ssl=False) as r:
                 assert r.status == 201
+    
+    async def get_space(self, id: str) -> Space:
+        url = f"/spaces/{id}"
+        async with self.session.get(url,
+                                    proxy=self.proxy,
+                                    verify_ssl=False) as r:
+            await self._handle_response(r)
+            res_json = await r.json()
+            return Space.model_validate(res_json)
+        
+    async def get_space_meters(self, id: str) -> List[SpaceMeters]:
+        url = f"/spaces/{id}/meters"
+        async with self.session.get(url,
+                                    proxy=self.proxy,
+                                    verify_ssl=False) as r:
+            await self._handle_response(r)
+            res_json = await r.json()
+            space_meters_list = []
+            for data in res_json:
+                space_meters_list.append(SpaceMeters.model_validate(data))
 
+            return space_meters_list
+        
     async def update_spaces(self, id: str, data: dict):
         url = fr"/spaces/{id}"
         async with self.semaphore:

@@ -9,12 +9,6 @@ from pydantic import (
 )
 
 
-class Space(BaseModel):
-    plannedArea: float
-    areaBTI: float
-    typeDecoration: Optional[str | None] = None
-
-
 class Owner(BaseModel):
     name: str
     email: EmailStr | None
@@ -117,18 +111,6 @@ class ProblemFilter(BaseModel):
     spaces: Optional[List[str]] = []  # id помещений
 
 
-# class ProblemNew(BaseModel):
-#     links: Optional[ProblemLinks] = None
-#     categoryId: str | dict = None
-#     stage: str
-#     plannedFixDate: Optional[int] = 0
-#     reason: dict
-#     description: Optional[str] = None
-#     prescription: Optional[str] = None
-#     attachments: Optional[List[Attachment]] = None
-#     planId: Optional[str] = None
-#     floor: Optional[str] = None
-
 class WorkScope(BaseModel):
     value: Optional[str] = None
     unitId: Optional[str] = None
@@ -145,3 +127,75 @@ class WorkAcceptances(Problem):
     physicalWorkScope: Optional[WorkScope] = None
     type: Optional[str] = None
     frontType: Optional[str]
+
+
+class Spacetype(BaseModel):
+    id: str
+    name: str | None = None
+    singularName: str | None = None
+
+
+class Space(BaseModel):
+    id: str
+    objectId: str
+    name: str | None = None
+    altName: str | None = None
+    type: Spacetype
+    status: Status
+    indicators: List[str | None] = None
+    floor: str | None = None
+    plannedArea: float | None = None
+    actualArea: float | None = None
+    typeDecoration: str | None = None
+    areaBTI: float | None = None
+    numberBTI: str | None = None
+    floorBTI: str | None = None
+    externalId: str | None = None
+    contractForm: str | None = None
+    markupForRegistration: bool = Field(default=True, exclude=True)
+    createdBy: User | None = None
+    createdAt: int
+    modifiedBy: User | None = None
+    decorationWarrantyExpiredDate: int | None = None
+    constructiveWarrantyExpiredDate: int | None = None
+    technicalEquipmentWarrantyExpiredDate: int | None = None
+
+    @field_validator('createdAt', mode='after')
+    def convert_timestamps_to_datetime(cls, value):
+        if isinstance(value, int):
+            return datetime.fromtimestamp(value / 1000)
+        return value
+
+
+class SpaceMetersTariff(Status):
+    pass
+
+
+class SpaceMeterType(BaseModel):
+    id: str
+    name: str
+    measureUnit: str
+
+
+class SpaceMetersConsumption(BaseModel):
+    id: str | None = None
+    value: str | None = None
+    tariff: SpaceMetersTariff | None = None
+    createdBy: User | None = None
+    createdAt: int | None = None
+    modifiedBy: User | None = None
+    modifiedAt: int | None = None
+    
+    @field_validator('createdAt', 'modifiedAt', mode='after')
+    def convert_timestamps_to_datetime(cls, value):
+        if isinstance(value, int):
+            return datetime.fromtimestamp(value / 1000)
+        return value
+
+
+class SpaceMeters(BaseModel):
+    id: str
+    type: SpaceMeterType | None
+    serialNumber: str
+    description: str
+    consumptions: List[SpaceMetersConsumption] | None = None
