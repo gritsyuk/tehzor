@@ -1,6 +1,6 @@
 import asyncio
 import pandas as pd
-from tehzor.models import Problem
+from tehzor.models import Problem, ProblemFilter
 from tehzor import TehzorAPI
 from tehzor.constants import CONSTRUCT_STAGES
 from config import API_KEY, USER_ID, CONSTRUCTION
@@ -14,7 +14,7 @@ async def main():
 
     # construct_keys = ["beside1_1_1", "beside1_1_2", "beside1_2_1", "beside1_2_2"]
     construct_keys = ["mitino_k18_1"]
-    filters = tehzorModel.ProblemFilter(
+    filters = ProblemFilter(
         objects=[CONSTRUCTION[id] for id in construct_keys]
         )
     try:
