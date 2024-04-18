@@ -196,8 +196,8 @@ class SpaceMetersConsumption(BaseModel):
 class SpaceMeters(BaseModel):
     id: str
     type: SpaceMeterType | None
-    serialNumber: str
-    description: str
+    serialNumber: str | None = None
+    description: str | None = None
     consumptions: List[SpaceMetersConsumption] | None = None
     createdBy: User | None = None
     createdAt: int | None = None
