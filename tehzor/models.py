@@ -199,3 +199,7 @@ class SpaceMeters(BaseModel):
     serialNumber: str
     description: str
     consumptions: List[SpaceMetersConsumption] | None = None
+    createdBy: User | None = None
+    createdAt: int | None = None
+    modifiedBy: User | None = None
+    modifiedAt: int | None = None
