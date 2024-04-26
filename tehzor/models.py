@@ -36,7 +36,7 @@ class Attachment(BaseModel):
 
 
 class User(BaseModel):
-    id: str
+    id: Optional[str] = None
     fullName: Optional[str] = None
     displayName: Optional[str] = None
     position: Optional[str] = None
@@ -120,13 +120,19 @@ class WorkScope(BaseModel):
 class WorkAcceptances(Problem):
     objectId: str
     structureIds: List[str]
-    spaceIds: List[str]
+    spaceIds: List[str] = [] 
     acceptanceDate: int
     percent: Optional[float] = 0.0
     comment: Optional[str] = None
     physicalWorkScope: Optional[WorkScope] = None
     type: Optional[str] = None
     frontType: Optional[str]
+
+    @field_validator('createdAt', 'modifiedAt', 'acceptanceDate', mode='after')
+    def convert_timestamps_to_datetime(cls, value):
+        if isinstance(value, int):
+            return datetime.fromtimestamp(value / 1000)
+        return value
 
 
 class Spacetype(BaseModel):
