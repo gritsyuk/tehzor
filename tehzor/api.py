@@ -1,10 +1,10 @@
 from aiohttp import ClientSession, ClientResponse
 from asyncio import Semaphore
 from typing import List, AsyncGenerator, Optional
-from .models import (ProblemFilter, 
-                     Problem, 
-                     WorkAcceptances, 
-                     Space, 
+from .models import (ProblemFilter,
+                     Problem,
+                     WorkAcceptances,
+                     Space,
                      SpaceMeters)
 
 
@@ -72,26 +72,26 @@ class TehzorAPI(object):
             return Problem.model_validate(res_json)
 
     async def get_problems(self,
-                           user_id: str = None,  
+                           user_id: str = None,
                            limit: int = 50000,
-                           offset: int = 0, 
+                           offset: int = 0,
                            filter: Optional[ProblemFilter] = None) -> AsyncGenerator[Problem, None]:
         url = r"/problems"
         if not user_id and self.user_id:
             user_id = self.user_id
         params = dict(userId=user_id,
-                      limit=limit, 
+                      limit=limit,
                       offset=offset)
         filter_json = filter.model_dump() if filter else None
-        async with self.session.get(url, 
-                                    params=params, 
-                                    proxy=self.proxy, 
+        async with self.session.get(url,
+                                    params=params,
+                                    proxy=self.proxy,
                                     json=filter_json) as r:
             await self._handle_response(r)
             res_json = await r.json()
             for data in res_json:
                 yield Problem.model_validate(data)
-    
+
     async def get_work_acceptance(self, id: str) -> WorkAcceptances:
         url = f"/work-acceptances/{id}"
         async with self.session.get(url,
@@ -102,18 +102,18 @@ class TehzorAPI(object):
             return WorkAcceptances.model_validate(res_json)
 
     async def get_work_acceptances(self,
-                                   object_id: str= "",
+                                   object_id: str = "",
                                    limit: int = 50000,
                                    offset: int = 0,
                                    ) -> AsyncGenerator[WorkAcceptances, None]:
-        url = "/work-acceptances"
+        url = "/work-acceptances/get-work-acceptances"
         params = dict(objectId=object_id,
-                      limit=limit, 
+                      limit=limit,
                       offset=offset)
-        async with self.session.get(url,
-                                    params=params,
-                                    proxy=self.proxy,
-                                    verify_ssl=False) as r:
+        async with self.session.post(url,
+                                     params=params,
+                                     proxy=self.proxy,
+                                     verify_ssl=False) as r:
             await self._handle_response(r)
             res_json = await r.json()
             for data in res_json:
@@ -127,15 +127,15 @@ class TehzorAPI(object):
                                      verify_ssl=False) as r:
             assert r.status == 201
             return await r.json()
-    
+
     # async def create_problem(self, data: ProblemNew) -> Problem:
     #     url = fr"/problems"
     #     async with self.session.post(url,
     #                                  data=data,
     #                                  proxy=self.proxy,
     #                                  verify_ssl=False) as r:
-            # assert r.status == 201
-            # return await r.json()
+    # assert r.status == 201
+    # return await r.json()
 
     async def get_contract_forms(self) -> dict:
         url = r"/contract-forms"
@@ -153,7 +153,7 @@ class TehzorAPI(object):
                                          proxy=self.proxy,
                                          verify_ssl=False) as r:
                 assert r.status == 201
-    
+
     async def get_space(self, id: str) -> Space:
         url = f"/spaces/{id}"
         async with self.session.get(url,
@@ -162,7 +162,7 @@ class TehzorAPI(object):
             await self._handle_response(r)
             res_json = await r.json()
             return Space.model_validate(res_json)
-        
+
     async def get_space_meters(self, id: str) -> List[SpaceMeters]:
         url = f"/spaces/{id}/meters"
         async with self.session.get(url,
@@ -175,7 +175,7 @@ class TehzorAPI(object):
                 space_meters_list.append(SpaceMeters.model_validate(data))
 
             return space_meters_list
-        
+
     async def update_spaces(self, id: str, data: dict):
         url = fr"/spaces/{id}"
         async with self.semaphore:

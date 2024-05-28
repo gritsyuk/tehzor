@@ -10,7 +10,7 @@ async def test_get_work_acceptance_success():
                                  user_id=USER_ID
                                  )
     try:
-        res = await thz.get_work_acceptance("661a261d5d3aea11af15b08f")
+        res = await thz.get_work_acceptance("6655bb0bfc1f87d4ec04d167")
         assert isinstance(res, WorkAcceptances)
     finally:
         await thz.session_close()
