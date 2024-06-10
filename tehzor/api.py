@@ -1,11 +1,12 @@
 from aiohttp import ClientSession, ClientResponse
 from asyncio import Semaphore
 from typing import List, AsyncGenerator, Optional
-from .models import (ProblemFilter,
-                     Problem,
-                     WorkAcceptances,
+from .models import (Problem,
+                     ProblemFilter,
+                     HealthCheck,
+                     SpaceMeters,
                      Space,
-                     SpaceMeters)
+                     WorkAcceptances)
 
 
 class TehzorAPIError(Exception):
@@ -61,6 +62,16 @@ class TehzorAPI(object):
             await self.session.close()
             raise
 
+    async def health_check(self) -> HealthCheck:
+        url = f"/health-check"
+        async with self.session.get(url,
+                                    proxy=self.proxy,
+                                    verify_ssl=False) as r:
+            await self._handle_response(r)
+            res_json = await r.json()
+            print(res_json)
+            return HealthCheck.model_validate(res_json)
+
     async def get_problem(self, id: str) -> Problem:
         url = f"/problems/{id}"
         async with self.session.get(url,
@@ -76,14 +87,14 @@ class TehzorAPI(object):
                            limit: int = 50000,
                            offset: int = 0,
                            filter: Optional[ProblemFilter] = None) -> AsyncGenerator[Problem, None]:
-        url = r"/problems"
+        url = r"/problems/get-problems"
         if not user_id and self.user_id:
             user_id = self.user_id
         params = dict(userId=user_id,
                       limit=limit,
                       offset=offset)
         filter_json = filter.model_dump() if filter else None
-        async with self.session.get(url,
+        async with self.session.post(url,
                                     params=params,
                                     proxy=self.proxy,
                                     json=filter_json) as r:

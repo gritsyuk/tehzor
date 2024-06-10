@@ -1,6 +1,6 @@
 import pytest
 from tehzor.api import TehzorAPI, TehzorAPIError
-from tehzor.models import SpaceMeters
+from tehzor.models.space_meters import SpaceMeters
 from typing import List
 from config import API_KEY, USER_ID
 
