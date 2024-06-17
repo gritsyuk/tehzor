@@ -22,7 +22,7 @@ async def main():
 
     async for res in thz.get_work_acceptances(object_id="65fad64beb908e0264317b76", limit=5000, offset=0):
         row = [res.number,
-               res.initialGroup,
+               res.acceptorsInitialGroup,
                res.objectId,
                res.status.name,
                res.category.name,

@@ -27,6 +27,10 @@ class ProblemLinks(BaseModel):
     workAcceptanceId: Optional[str] = None
 
 
+class Reason(BaseModel):
+    value: Optional[str] = None
+
+
 class Problem(BaseModel):
     id: str
     object: Optional[Construction] = Field(default=None, exclude=True)
@@ -37,19 +41,23 @@ class Problem(BaseModel):
     plannedFixDate: Optional[int] = None
     categoryId: str | dict = None
     category: Optional[Category] = Category(id="-", name="Без категории")
-    plan: Optional[dict] = None
+    problemTags: Optional[List[str]] = None
+    reason: Optional[Reason] = None
+    plan: Optional[Status] = None
     floor: Optional[str] = None
     displayLocation: Optional[str] = None
     description: Optional[str] = None
     prescription: Optional[str] = None
     attachments: Optional[List[Attachment]] = None
-    respUsers: Optional[List[User | str]] = None
+    performers: Optional[List[User | str]] = Field(default=None, exclude=True)
     watchers: Optional[List[User | str]] = None
-    activeGroup: Optional[str] = None
-    activeGroupLeader: Optional[User | str] = None
-    initialGroup: Optional[str] = None
-    initialGroupLeader: Optional[User] = None
-    critical: Optional[bool] = None
+    performersActiveGroup: Optional[str] = Field(default=None, exclude=True)
+    performersActiveGroupLeader: Optional[User | str] = Field(default=None, exclude=True)
+    performersInitialGroup: Optional[str] = Field(default=None, exclude=True)
+    performersInitialGroupLeader: Optional[User] = Field(default=None, exclude=True)
+    inspectors: Optional[List[Status]] = None
+    inspectorsActiveGroup: Optional[str] = None
+    critical: Optional[bool] = False
     createdAt: int
     createdBy: Optional[User] = None
     modifiedAt: int
