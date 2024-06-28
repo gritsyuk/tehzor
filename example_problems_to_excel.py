@@ -13,7 +13,7 @@ async def main():
     data = []
 
     # construct_keys = ["beside1_1_1", "beside1_1_2", "beside1_2_1", "beside1_2_2"]
-    construct_keys = ["mitino_k18_1"]
+    construct_keys = ["mitino_k18_1", "mitino_k18_2", "mitino_k18_3", "mitino_k18_4"]
     filters = ProblemFilter(
         objects=[CONSTRUCTION[id] for id in construct_keys]
         )
@@ -39,7 +39,7 @@ async def main():
             data.append(fields)
  
         df = pd.DataFrame(data)
-        df.to_excel(excel_writer='problems.xlsx', index=False)
+        df.to_excel(excel_writer='problems_k18.xlsx', index=False)
     except Exception as e:
         print(f"Произошла ошибка: {e}")
     finally:

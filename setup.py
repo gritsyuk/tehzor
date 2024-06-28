@@ -7,7 +7,7 @@ with open("README.md", "r", encoding = "utf-8") as fh:
 
 setup(
   name='tehzor',
-  version='0.0.9',
+  version='0.0.10',
   author='Igor Gritsyuk',
   author_email='gritsyuk.igor@gmail.com',
   description='A Python API wrapper for Tehzor API',
@@ -15,7 +15,7 @@ setup(
   long_description=long_description,
   long_description_content_type='text/markdown',
   url='https://github.com/gritsyuk/tehzor',
-  packages=find_packages(include=['tehzor']),
+  packages=find_packages(include=['tehzor', 'tehzor.*']),
   install_requires=['aiohttp>=3.9.3', 'pydantic[email]>=2.6.4'],
   classifiers=[
     'Programming Language :: Python :: 3',
