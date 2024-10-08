@@ -5,13 +5,14 @@
 
 ## Установка
 ```bash
-pip install tehzor
+pip install -U tehzor
 ```
 
 ## Примеры
 Обновления параметров квартир (площадь, плащадь БТИ, тип отделки ...). Предварительно необходимо знать id квартир и id типа отделки:
 
 ```python
+import asyncio
 from tehzor import TehzorAPI
 from examples.excel_apartments import result_flats
 
@@ -32,4 +33,5 @@ async def main():
 if __name__ == "__main__":
     asyncio.run(main())
 ```
-
+## Внимание
+Проект в разработке...  Происходят изменения в исходном API (изменяются наименование методов, свойств объектов) 

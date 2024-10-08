@@ -31,6 +31,11 @@ class Reason(BaseModel):
     value: Optional[str] = None
 
 
+class ProblemTag(BaseModel):
+    id: str
+    name: str
+
+
 class Problem(BaseModel):
     id: str
     object: Optional[Construction] = Field(default=None, exclude=True)
@@ -41,7 +46,7 @@ class Problem(BaseModel):
     plannedFixDate: Optional[int] = None
     categoryId: str | dict = None
     category: Optional[Category] = Category(id="-", name="Без категории")
-    problemTags: Optional[List[str]] = None
+    problemTags: Optional[List[ProblemTag]] = None
     reason: Optional[Reason] = None
     plan: Optional[Status] = None
     floor: Optional[str] = None

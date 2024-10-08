@@ -11,10 +11,10 @@ async def main():
                                     )
 
     filters = ProblemFilter(
-        objects=["641f0fe41ba6ce0024682d44"]
+        objects=["64480e02944e713c0cd6a26d"]
         )
 
-    async for res in tehzor.get_problems(limit=2, filter=filters):
+    async for res in tehzor.get_problems(limit=20, filter=filters):
         pprint(res)
 
     await tehzor.session_close()
