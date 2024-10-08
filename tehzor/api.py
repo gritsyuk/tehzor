@@ -1,12 +1,7 @@
 from aiohttp import ClientSession, ClientResponse
 from asyncio import Semaphore
 from typing import List, AsyncGenerator, Optional
-from .models import (Problem,
-                     ProblemFilter,
-                     HealthCheck,
-                     SpaceMeters,
-                     Space,
-                     WorkAcceptances)
+from .models import *
 
 
 class TehzorAPIError(Exception):
@@ -63,7 +58,7 @@ class TehzorAPI(object):
             raise
 
     async def health_check(self) -> HealthCheck:
-        url = f"/health-check"
+        url = f"/health/readiness"
         async with self.session.get(url,
                                     proxy=self.proxy,
                                     verify_ssl=False) as r:
@@ -195,3 +190,12 @@ class TehzorAPI(object):
                                          proxy=self.proxy,
                                          verify_ssl=False) as r:
                 assert r.status == 201
+
+    async def get_warranty_claims(self, id_warrant: str) -> WarrantClaim:
+        url = f"/warranty-claims/{id_warrant}"
+        async with self.session.get(url,
+                                    proxy=self.proxy,
+                                    verify_ssl=False) as r:
+            await self._handle_response(r)
+            res_json = await r.json()
+            return WarrantClaim.model_validate(res_json)
