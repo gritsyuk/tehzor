@@ -18,7 +18,9 @@ class TehzorAPI(object):
                      url_api: str = "https://api.tehzor.ru",
                      user_id: str = None,
                      proxy: str = None,
-                     limit_threads: int = 25):
+                     limit_threads: int = 25,
+                     verify_ssl: bool = False,
+                     ):
         self = cls()
         self.url_api = url_api
         self.user_id = user_id
@@ -29,6 +31,7 @@ class TehzorAPI(object):
         self.proxy = proxy
         self.semaphore = Semaphore(limit_threads)
         self.session = ClientSession(base_url=self.url_api, headers=self.headers)
+        self.verify_ssl = verify_ssl
 
         return self
 
@@ -61,7 +64,7 @@ class TehzorAPI(object):
         url = f"/health/readiness"
         async with self.session.get(url,
                                     proxy=self.proxy,
-                                    verify_ssl=False) as r:
+                                    verify_ssl=self.verify_ssl) as r:
             await self._handle_response(r)
             res_json = await r.json()
             return HealthCheck.model_validate(res_json)
@@ -70,7 +73,7 @@ class TehzorAPI(object):
         url = f"/problems/{id}"
         async with self.session.get(url,
                                     proxy=self.proxy,
-                                    verify_ssl=False) as r:
+                                    verify_ssl=self.verify_ssl) as r:
             await self._handle_response(r)
             res_json = await r.json()
 
@@ -91,7 +94,8 @@ class TehzorAPI(object):
         async with self.session.post(url,
                                     params=params,
                                     proxy=self.proxy,
-                                    json=filter_json) as r:
+                                    json=filter_json,
+                                    verify_ssl=self.verify_ssl) as r:
             await self._handle_response(r)
             res_json = await r.json()
             for data in res_json:
@@ -101,7 +105,7 @@ class TehzorAPI(object):
         url = f"/work-acceptances/{id}"
         async with self.session.get(url,
                                     proxy=self.proxy,
-                                    verify_ssl=False) as r:
+                                    verify_ssl=self.verify_ssl) as r:
             await self._handle_response(r)
             res_json = await r.json()
             return WorkAcceptances.model_validate(res_json)
@@ -118,7 +122,7 @@ class TehzorAPI(object):
         async with self.session.post(url,
                                      params=params,
                                      proxy=self.proxy,
-                                     verify_ssl=False) as r:
+                                     verify_ssl=self.verify_ssl) as r:
             await self._handle_response(r)
             res_json = await r.json()
             for data in res_json:
@@ -129,7 +133,7 @@ class TehzorAPI(object):
         async with self.session.post(url,
                                      data=data,
                                      proxy=self.proxy,
-                                     verify_ssl=False) as r:
+                                     verify_ssl=self.verify_ssl) as r:
             assert r.status == 201
             return await r.json()
 
@@ -137,7 +141,7 @@ class TehzorAPI(object):
         url = r"/contract-forms"
         async with self.session.get(url,
                                     proxy=self.proxy,
-                                    verify_ssl=False) as r:
+                                    verify_ssl=self.verify_ssl) as r:
             assert r.status == 200
             return await r.json()
 
@@ -147,7 +151,7 @@ class TehzorAPI(object):
             async with self.session.post(url,
                                          data=data,
                                          proxy=self.proxy,
-                                         verify_ssl=False) as r:
+                                         verify_ssl=self.verify_ssl) as r:
                 assert r.status == 201
 
     async def get_spaces(self,
@@ -160,7 +164,8 @@ class TehzorAPI(object):
         async with self.session.post(url,
                                     params=params,
                                     proxy=self.proxy,
-                                    json=filter_json) as r:
+                                    json=filter_json,
+                                    verify_ssl=self.verify_ssl) as r:
             await self._handle_response(r)
             res_json = await r.json()
             for data in res_json:
@@ -182,7 +187,7 @@ class TehzorAPI(object):
         url = f"/spaces/{id}"
         async with self.session.get(url,
                                     proxy=self.proxy,
-                                    verify_ssl=False) as r:
+                                    verify_ssl=self.verify_ssl) as r:
             await self._handle_response(r)
             res_json = await r.json()
             return Space.model_validate(res_json)
@@ -191,7 +196,7 @@ class TehzorAPI(object):
         url = f"/spaces/{id}/meters"
         async with self.session.get(url,
                                     proxy=self.proxy,
-                                    verify_ssl=False) as r:
+                                    verify_ssl=self.verify_ssl) as r:
             await self._handle_response(r)
             res_json = await r.json()
             space_meters_list = []
@@ -206,14 +211,14 @@ class TehzorAPI(object):
             async with self.session.post(url,
                                          data=data,
                                          proxy=self.proxy,
-                                         verify_ssl=False) as r:
+                                         verify_ssl=self.verify_ssl) as r:
                 assert r.status == 201
 
     async def get_warranty_claims(self, id_warrant: str) -> WarrantClaim:
         url = f"/warranty-claims/{id_warrant}"
         async with self.session.get(url,
                                     proxy=self.proxy,
-                                    verify_ssl=False) as r:
+                                    verify_ssl=self.verify_ssl) as r:
             await self._handle_response(r)
             res_json = await r.json()
             return WarrantClaim.model_validate(res_json)
@@ -222,7 +227,7 @@ class TehzorAPI(object):
         url = f"/space-types-decorations"
         async with self.session.get(url,
                                     proxy=self.proxy,
-                                    verify_ssl=False) as r:
+                                    verify_ssl=self.verify_ssl) as r:
             await self._handle_response(r)
 
             return await r.json()

@@ -7,7 +7,7 @@ with open("README.md", "r", encoding = "utf-8") as fh:
 
 setup(
   name='tehzor',
-  version='0.1.0',
+  version='0.1.1',
   author='Igor Gritsyuk',
   author_email='gritsyuk.igor@gmail.com',
   description='A Python API wrapper for Tehzor API',

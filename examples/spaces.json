@@ -1,0 +1,24 @@
+[
+    {
+        "id": "645fcdb772d3d1edf040b096",
+        "object_id": "641ef54d1ba6ce0024681763",
+        "name": "76",
+        "alt_name": null,
+        "type": {
+            "id": "apartments",
+            "name": "Квартиры",
+            "singular_name": "Квартира"
+        },
+        "status": {
+            "id": "6444e362d28e6c2b2bbf92ad",
+            "name": "Передано с замечаниями"
+        },
+        "floor": "7",
+        "planned_area": null,
+        "actual_area": null,
+        "area_bti": 0.0,
+        "number_bti": null,
+        "floor_bti": null,
+        "external_id": null
+    }
+]
