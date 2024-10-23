@@ -11,3 +11,4 @@ from .status import *
 from .user import *
 from .workacceptances import *
 from .warranty_claims import *
+from .space_decoration import *

@@ -205,6 +205,15 @@ class TehzorAPI(object):
 
             return space_meters_list
 
+    async def get_space_types_decorations(self) -> List[DecorationList]:
+        url = f"/space-types-decorations"
+        async with self.session.get(url,
+                                    proxy=self.proxy,
+                                    verify_ssl=self.verify_ssl) as r:
+            await self._handle_response(r)
+            res_json = await r.json()
+            return [DecorationList.model_validate(item) for item in res_json]
+
     async def update_spaces(self, id: str, data: dict):
         url = fr"/spaces/{id}"
         async with self.semaphore:
