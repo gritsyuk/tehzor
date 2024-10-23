@@ -1,12 +1,9 @@
-from pydantic import (
-    BaseModel
-)
-from typing import Optional
+from .base import BaseTehzorModel
 
 
-class User(BaseModel):
-    id: Optional[str] = None
-    fullName: Optional[str] = None
-    displayName: Optional[str] = None
-    position: Optional[str] = None
-    color: Optional[str] = None
+class User(BaseTehzorModel):
+    id: str | None = None
+    full_name: str | None = None
+    display_name: str | None = None
+    position: str | None = None
+    color: str | None = None

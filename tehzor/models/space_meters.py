@@ -2,45 +2,46 @@ from pydantic import (
     BaseModel,
     field_validator,
 )
-from typing import List, Optional
+from typing import List
 from datetime import datetime
 from .user import User
+from .base import BaseTehzorModel
 
 
 class SpaceMetersTariff(BaseModel):
-    id: Optional[str] = None
-    name: Optional[str] = None
+    id: str | None = None
+    name: str | None = None
 
 
-class SpaceMeterType(BaseModel):
+class SpaceMeterType(BaseTehzorModel):
     id: str
     name: str
-    measureUnit: str
+    measure_unit: str
 
 
-class SpaceMetersConsumption(BaseModel):
+class SpaceMetersConsumption(BaseTehzorModel):
     id: str | None = None
     value: str | None = None
     tariff: SpaceMetersTariff | None = None
-    createdBy: User | None = None
-    createdAt: int | None = None
-    modifiedBy: User | None = None
-    modifiedAt: int | None = None
+    created_by: User | None = None
+    created_at: int | None = None
+    modified_by: User | None = None
+    modified_at: int | None = None
 
-    @field_validator('createdAt', 'modifiedAt', mode='after')
+    @field_validator('created_at', 'modified_at', mode='after')
     def convert_timestamps_to_datetime(cls, value):
         if isinstance(value, int):
             return datetime.fromtimestamp(value / 1000)
         return value
 
 
-class SpaceMeters(BaseModel):
+class SpaceMeters(BaseTehzorModel):
     id: str
     type: SpaceMeterType | None
-    serialNumber: str | None = None
+    serial_number: str | None = None
     description: str | None = None
     consumptions: List[SpaceMetersConsumption] | None = None
-    createdBy: User | None = None
-    createdAt: int | None = None
-    modifiedBy: User | None = None
-    modifiedAt: int | None = None
+    created_by: User | None = None
+    created_at: int | None = None
+    modified_by: User | None = None
+    modified_at: int | None = None

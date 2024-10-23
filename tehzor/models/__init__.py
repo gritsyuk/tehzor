@@ -1,3 +1,4 @@
+from .base import *
 from .attachment import *
 from .category import *
 from .construction import *

@@ -12,7 +12,6 @@ async def main():
                                     )
     data = []
 
-    # construct_keys = ["beside1_1_1", "beside1_1_2", "beside1_2_1", "beside1_2_2"]
     construct_keys = ["mitino_k18_1", "mitino_k18_2", "mitino_k18_3", "mitino_k18_4"]
     filters = ProblemFilter(
         objects=[CONSTRUCTION[id] for id in construct_keys]
@@ -30,10 +29,10 @@ async def main():
                 valid_problem.status.name,
                 valid_problem.category.name,
                 valid_problem.floor,
-                valid_problem.displayLocation,
-                valid_problem.createdAt,
-                valid_problem.modifiedAt,
-                valid_problem.createdBy.fullName,
+                valid_problem.display_location,
+                valid_problem.created_at,
+                valid_problem.modified_at,
+                valid_problem.created_by.full_name,
                 valid_problem.description
                 )
             data.append(fields)

@@ -8,9 +8,9 @@ async def main():
     try:
         thz = await TehzorAPI.create(api_key=API_KEY, 
                                      user_id=USER_ID
-                                        )
+                                    )
 
-        res = await thz.get_space("65b0a0fa00dca85609216435")
+        res = await thz.get_space("645fcdb772d3d1edf040b096")
         pprint(res)
     except Exception as e:
         print(e)

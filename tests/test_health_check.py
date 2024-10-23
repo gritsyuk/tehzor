@@ -11,6 +11,7 @@ async def test_health_check_success():
                                  )
     try:
         res = await thz.health_check()
+        print(res)
         assert res.status == "ok"
         assert isinstance(res, HealthCheck)
     finally:

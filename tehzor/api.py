@@ -1,6 +1,6 @@
 from aiohttp import ClientSession, ClientResponse
 from asyncio import Semaphore
-from typing import List, AsyncGenerator, Optional
+from typing import Dict, AsyncGenerator, Optional
 from .models import *
 
 
@@ -64,7 +64,6 @@ class TehzorAPI(object):
                                     verify_ssl=False) as r:
             await self._handle_response(r)
             res_json = await r.json()
-            print(res_json)
             return HealthCheck.model_validate(res_json)
 
     async def get_problem(self, id: str) -> Problem:
@@ -134,15 +133,6 @@ class TehzorAPI(object):
             assert r.status == 201
             return await r.json()
 
-    # async def create_problem(self, data: ProblemNew) -> Problem:
-    #     url = fr"/problems"
-    #     async with self.session.post(url,
-    #                                  data=data,
-    #                                  proxy=self.proxy,
-    #                                  verify_ssl=False) as r:
-    # assert r.status == 201
-    # return await r.json()
-
     async def get_contract_forms(self) -> dict:
         url = r"/contract-forms"
         async with self.session.get(url,
@@ -159,6 +149,34 @@ class TehzorAPI(object):
                                          proxy=self.proxy,
                                          verify_ssl=False) as r:
                 assert r.status == 201
+
+    async def get_spaces(self,
+                         limit: int = 50000,
+                         offset: int = 0,
+                         filter: Optional[SpacesFilter] = None) -> AsyncGenerator[Dict, None]:
+        url = r"/spaces/get-spaces"
+        params = dict(limit=limit, offset=offset)
+        filter_json = filter.model_dump() if filter else None
+        async with self.session.post(url,
+                                    params=params,
+                                    proxy=self.proxy,
+                                    json=filter_json) as r:
+            await self._handle_response(r)
+            res_json = await r.json()
+            for data in res_json:
+                valid_space = Space.model_validate(data)
+                yield Space.model_dump(valid_space, exclude={
+                                                    'indicators',
+                                                    'type_decoration',
+                                                    'contract_form',
+                                                    'markup_for_registration',
+                                                    'created_by',
+                                                    'created_at',
+                                                    'modified_by',
+                                                    'decoration_warranty_expired_date',
+                                                    'constructive_warranty_expired_date',
+                                                    'technical_equipment_warranty_expired_date'
+                                                })
 
     async def get_space(self, id: str) -> Space:
         url = f"/spaces/{id}"
@@ -199,3 +217,12 @@ class TehzorAPI(object):
             await self._handle_response(r)
             res_json = await r.json()
             return WarrantClaim.model_validate(res_json)
+
+    async def get_space_types_decoration(self) -> WarrantClaim:
+        url = f"/space-types-decorations"
+        async with self.session.get(url,
+                                    proxy=self.proxy,
+                                    verify_ssl=False) as r:
+            await self._handle_response(r)
+
+            return await r.json()

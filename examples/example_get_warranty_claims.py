@@ -10,7 +10,7 @@ async def main():
                                      user_id=USER_ID
                                         )
 
-        res = await thz.get_warranty_claims("66f2aa5d3bcb9a36b69b7f5a")
+        res = await thz.get_warranty_claims("6718d68b245bb01e8f8280d3")
         pprint(res)
     except Exception as e:
         print(e)
