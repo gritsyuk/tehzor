@@ -232,11 +232,3 @@ class TehzorAPI(object):
             res_json = await r.json()
             return WarrantClaim.model_validate(res_json)
 
-    async def get_space_types_decoration(self) -> WarrantClaim:
-        url = f"/space-types-decorations"
-        async with self.session.get(url,
-                                    proxy=self.proxy,
-                                    verify_ssl=self.verify_ssl) as r:
-            await self._handle_response(r)
-
-            return await r.json()
