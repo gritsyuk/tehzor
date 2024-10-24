@@ -11,7 +11,7 @@ async def main():
                                     )
 
         res = await thz.get_space_types_decorations()
-        pprint(res)
+        pprint(res[0].model_dump())
     except Exception as e:
         print(e)
     finally:

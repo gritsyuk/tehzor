@@ -1,13 +1,16 @@
 from pydantic import (
     BaseModel,
     Field,
-    field_validator
+    field_validator,
+    ConfigDict,
+    AliasGenerator
 )
 from typing import List, Optional
 from datetime import datetime
 from .status import Status
 from .user import User
 from .base import BaseTehzorModel
+from pydantic.alias_generators import to_camel, to_snake
 
 
 class SpaceType(BaseTehzorModel):
@@ -51,3 +54,24 @@ class Space(BaseTehzorModel):
 
 class SpacesFilter(BaseModel):
     spaces: Optional[List[str]] = []
+
+class SpaceUpdate(BaseModel):
+    model_config = ConfigDict(
+        alias_generator=AliasGenerator(
+            validation_alias=to_snake,
+            serialization_alias=to_camel
+        )
+    )
+    alt_name: str | None = None
+    planned_area: float | None = None
+    actual_area: float | None = None
+    type_decoration: str | None = None
+    area_bti: float | None = Field(default=None, alias='areaBTI', alias_priority=100)
+    number_bti: str | None = Field(default=None, alias='numberBTI', alias_priority=100)
+    floor_bti: str | None = Field(default=None, alias='floorBTI', alias_priority=100)
+    contract_form: str | None = None
+    markup_for_registration: bool | None = None
+    modified_by: str | None = None
+    decoration_warranty_expired_date: int | None = None
+    constructive_warranty_expired_date: int | None = None
+    technical_equipment_warranty_expired_date: int | None = None
