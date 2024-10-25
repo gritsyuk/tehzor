@@ -14,8 +14,8 @@ construction_site = {
 
 async def main():
     try:
-        tehzor = await TehzorAPI.create(api_key=API_KEY)
-        spaces_list = [space async for space in tehzor.get_spaces()]
+        thz = await TehzorAPI.create(api_key=API_KEY)
+        spaces_list = [space async for space in thz.get_spaces()]
         data = [
             {
                 'id': space['id'],
@@ -34,7 +34,7 @@ async def main():
     except Exception as e:
         print(e)
     finally:
-        await tehzor.session_close()
+        await thz.session_close()
 
 if __name__ == "__main__":    
     asyncio.run(main())
