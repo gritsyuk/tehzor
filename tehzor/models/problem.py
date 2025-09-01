@@ -4,12 +4,13 @@ from pydantic import (
     Field
 )
 from datetime import datetime
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from .attachment import Attachment
 from .category import Category
 from .construction import Construction
 from .status import Status
 from .user import User
+from .location import Location
 from .base import BaseTehzorModel
 
 
@@ -79,3 +80,29 @@ class Problem(BaseTehzorModel):
 class ProblemFilter(BaseModel):
     objects: Optional[List[str]] = []
     spaces: Optional[List[str]] = []
+
+
+class NewProblem(BaseTehzorModel):
+    links: Optional[ProblemLinks] = None
+    category_id: str
+    stage: str
+    process_id: str
+    planned_fix_date: Optional[int] = None
+    reason: Optional[Reason] = None
+    description: Optional[str] = None
+    prescription: Optional[str] = None
+    attachments: Optional[List[str]] = None  # Assuming list of attachment IDs/URLs for creation
+    plan_id: Optional[str] = None
+    floor: Optional[str] = None
+    location: Optional[Location] = None
+    critical: Optional[bool] = False
+    performers: Optional[List[str]] = None  # List of User IDs for creation
+    performers_active_group: Optional[str] = None
+    inspectors: Optional[List[str]] = None  # List of User IDs for creation
+    inspectors_active_group: Optional[str] = None
+    watchers: Optional[List[str]] = None  # List of User IDs for creation
+    problem_tags: Optional[List[str]] = None  # List of ProblemTag IDs/names for creation
+    custom_fields: Optional[Dict[str, Any]] = None
+    external_id: Optional[str] = None
+    object_id: Optional[str] = None
+    created_by: Optional[str] = None  # User ID for creation
