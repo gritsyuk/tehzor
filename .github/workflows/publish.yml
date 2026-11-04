@@ -1,0 +1,95 @@
+name: Publish to PyPI
+
+# Публикация через PyPI Trusted Publishing (OIDC): токены и пароли не нужны.
+# На PyPI настроен издатель: владелец gritsyuk, репозиторий tehzor, workflow publish.yml, среда pypi.
+# Среда `pypi` в GitHub (Settings → Environments) должна требовать ручного подтверждения (Required reviewers):
+# публикация на PyPI необратима — версию нельзя перезалить.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: "Опубликовать на PyPI (иначе только сборка и проверки)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]" build twine
+      - name: проверки перед публикацией
+        run: |
+          ruff check .
+          mypy
+          pytest tests/unit -q
+      - id: version
+        name: версия пакета совпадает с тегом
+        run: |
+          VERSION=$(python -c "from tehzor import __version__; print(__version__)")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [ "${GITHUB_REF_TYPE}" = "tag" ] && [ "${GITHUB_REF_NAME}" != "v${VERSION}" ]; then
+            echo "Тег ${GITHUB_REF_NAME} не совпадает с версией пакета v${VERSION}" >&2
+            exit 1
+          fi
+      - run: python -m build
+      - run: twine check --strict dist/*
+      - name: wheel содержит только пакет tehzor
+        run: |
+          python - <<'EOF'
+          import glob, zipfile
+          names = zipfile.ZipFile(glob.glob("dist/*.whl")[0]).namelist()
+          bad = [n for n in names if not (n.startswith("tehzor/") or ".dist-info/" in n)]
+          assert not bad, bad
+          EOF
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    if: github.ref_type == 'tag' || inputs.publish
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/tehzor/${{ needs.build.outputs.version }}/
+    permissions:
+      id-token: write   # OIDC для Trusted Publishing
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    needs: [build, publish]
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: раздел CHANGELOG для этой версии
+        run: |
+          VERSION="${{ needs.build.outputs.version }}"
+          awk -v v="## [$VERSION]" 'index($0, v)==1 {f=1; next} /^## \[/ && f {exit} f' CHANGELOG.md > notes.md
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --title "tehzor $GITHUB_REF_NAME" --notes-file notes.md

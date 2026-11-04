@@ -3,10 +3,15 @@
 
 ## Асинхронный Python-клиент Tehzor Public API
 
-> **Ветка в разработке (0.2.0.dev).** Идёт полное переписывание под все 73 метода
-> [Tehzor Public API](https://api.tehzor.ru/docs) и MCP-сервер для LLM-агентов.
-> План — [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md), статус — ниже.
-> Опубликованная на PyPI версия 0.1.x имеет другой интерфейс (`TehzorAPI.create`).
+Все 73 метода [Tehzor Public API](https://api.tehzor.ru/docs) и MCP-сервер для LLM-агентов.
+
+```bash
+pip install -U tehzor            # библиотека
+pip install -U "tehzor[mcp]"     # + MCP-сервер tehzor-mcp
+```
+
+> **0.2.0 несовместима с 0.1.x** (`TehzorAPI.create`) — см. [docs/MIGRATION.md](docs/MIGRATION.md) и
+> [CHANGELOG.md](CHANGELOG.md). Примеры — в [examples/](examples/).
 
 ### Принципы
 
@@ -48,11 +53,13 @@ asyncio.run(main())
 
 ### Запуск
 
-**uvx** (без установки; до публикации 0.2.0 на PyPI — из git-ветки):
+**uvx** (без установки):
 
 ```bash
-uvx --from "tehzor[mcp] @ git+https://github.com/gritsyuk/tehzor@claude/hopeful-einstein-ehtyi0" tehzor-mcp
+uvx --from "tehzor[mcp]" tehzor-mcp
 ```
+
+Из git (например, ветка до релиза): `uvx --from "tehzor[mcp] @ git+https://github.com/gritsyuk/tehzor@<ветка>" tehzor-mcp`.
 
 **Docker:**
 
@@ -81,7 +88,7 @@ TEHZOR_API_KEY=… TEHZOR_MCP_HTTP_TOKEN=$(openssl rand -hex 32) docker compose 
 Claude Code:
 
 ```bash
-claude mcp add tehzor --env TEHZOR_API_KEY=… -- uvx --from "tehzor[mcp] @ git+https://github.com/gritsyuk/tehzor@claude/hopeful-einstein-ehtyi0" tehzor-mcp
+claude mcp add tehzor --env TEHZOR_API_KEY=… -- uvx --from "tehzor[mcp]" tehzor-mcp
 ```
 
 Claude Desktop (`claude_desktop_config.json`):
@@ -147,4 +154,4 @@ python -m venv .venv && .venv/bin/pip install -e ".[dev]"
 | 3. Контрактные тесты: 49 читающих операций на живом API | готово — 53 из 53 |
 | 4. Изменяющие операции (24): `dry_run`, только на заглушках | готово — 73 из 73 операций |
 | 5. MCP-сервер: 76 инструментов, 18 ресурсов, подтверждение записи; uvx и Docker | готово |
-| 6. Релиз 0.2.0 | — |
+| 6. Релиз 0.2.0: CHANGELOG, гайд миграции, примеры, публикация через Trusted Publishing | готово к публикации |
