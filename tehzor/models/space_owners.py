@@ -1,4 +1,4 @@
-"""Собственники помещений. Чтения в API нет — проверяются только на заглушках."""
+"""Собственники помещений. Чтения в API нет; запись проверена в песочнице (tests/sandbox, уровень 1)."""
 
 from __future__ import annotations
 
@@ -6,9 +6,15 @@ from ._base import TehzorModel, TehzorRequest
 
 
 class SpaceOwner(TehzorModel):
-    """Собственник. spec: ответ на создание — CreatableSpaceOwner без id, поэтому id необязателен."""
+    """Собственник.
+
+    spec: ответ на создание — CreatableSpaceOwner без id; fact (2026-11-04, песочница): id приходит
+    в ответах create/edit/get_or_create, есть `companyId` (нет в spec). id оставлен необязательным на случай
+    расхождения с spec.
+    """
 
     id: str | None = None
+    company_id: str | None = None
     name: str | None = None
     email: str | None = None
     additional_email: str | None = None
