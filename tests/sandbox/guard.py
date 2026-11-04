@@ -61,7 +61,14 @@ class SandboxTransport(Transport):
         for b in bodies:
             if isinstance(b, dict):
                 links = b.get("links") if isinstance(b.get("links"), dict) else {}
-                refs = [b.get("objectId"), b.get("spaceId"), *(b.get("spaceIds") or []), links.get("spaceId")]
+                refs = [
+                    b.get("objectId"),
+                    b.get("spaceId"),
+                    *(b.get("spaceIds") or []),
+                    b.get("spaceOwnerId"),
+                    *(v for k, v in links.items() if k.endswith("Id") and isinstance(v, str)),
+                    *(links.get("spaceIds") or []),
+                ]
                 foreign_refs = [r for r in refs if r and r not in self.created and r not in self.allowed_ids]
                 if foreign_refs:
                     raise SandboxViolation(
