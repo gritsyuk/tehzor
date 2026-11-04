@@ -1,0 +1,155 @@
+{
+ "types": [
+  "obj"
+ ],
+ "fields": {
+  "createdAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "createdBy": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "displayName": {
+     "types": [
+      "str"
+     ]
+    },
+    "employers": {
+     "types": [
+      "list"
+     ]
+    },
+    "fullName": {
+     "types": [
+      "str"
+     ]
+    },
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "position": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "floor": {
+   "types": [
+    "str"
+   ]
+  },
+  "id": {
+   "types": [
+    "str"
+   ]
+  },
+  "indicators": {
+   "types": [
+    "list"
+   ],
+   "items": {
+    "types": [
+     "str"
+    ]
+   }
+  },
+  "modifiedAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "modifiedBy": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "displayName": {
+     "types": [
+      "str"
+     ]
+    },
+    "employers": {
+     "types": [
+      "list"
+     ]
+    },
+    "fullName": {
+     "types": [
+      "str"
+     ]
+    },
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "position": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "name": {
+   "types": [
+    "str"
+   ]
+  },
+  "objectId": {
+   "types": [
+    "str"
+   ]
+  },
+  "status": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "name": {
+     "types": [
+      "str"
+     ]
+    },
+    "stage": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "type": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "name": {
+     "types": [
+      "str"
+     ]
+    },
+    "singularName": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  }
+ }
+}

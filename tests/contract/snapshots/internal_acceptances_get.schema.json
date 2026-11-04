@@ -1,0 +1,98 @@
+{
+ "types": [
+  "obj"
+ ],
+ "fields": {
+  "attachments": {
+   "types": [
+    "list"
+   ],
+   "items": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "full": {
+      "types": [
+       "obj"
+      ],
+      "fields": {
+       "id": {
+        "types": [
+         "str"
+        ]
+       },
+       "name": {
+        "types": [
+         "str"
+        ]
+       },
+       "size": {
+        "types": [
+         "int"
+        ]
+       },
+       "type": {
+        "types": [
+         "str"
+        ]
+       },
+       "url": {
+        "types": [
+         "str"
+        ]
+       }
+      }
+     },
+     "id": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   }
+  },
+  "createdAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "id": {
+   "types": [
+    "str"
+   ]
+  },
+  "links": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "spaceId": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "modifiedAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "number": {
+   "types": [
+    "int"
+   ]
+  },
+  "objectId": {
+   "types": [
+    "str"
+   ]
+  },
+  "stage": {
+   "types": [
+    "str"
+   ]
+  }
+ }
+}

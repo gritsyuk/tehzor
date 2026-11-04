@@ -1,0 +1,84 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "categoriesSetId": {
+    "types": [
+     "str"
+    ]
+   },
+   "createdAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "createdBy": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "color": {
+      "types": [
+       "str"
+      ]
+     },
+     "displayName": {
+      "types": [
+       "str"
+      ]
+     },
+     "employers": {
+      "types": [
+       "list"
+      ]
+     },
+     "fullName": {
+      "types": [
+       "str"
+      ]
+     },
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "position": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "externalId": {
+    "types": [
+     "str"
+    ]
+   },
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "modifiedAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "name": {
+    "types": [
+     "str"
+    ]
+   },
+   "order": {
+    "types": [
+     "int"
+    ]
+   }
+  }
+ }
+}

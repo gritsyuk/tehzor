@@ -10,6 +10,7 @@ from pydantic import BaseModel, TypeAdapter
 
 from .._registry import Operation, collect
 from .._transport import PreparedRequest, QueryValue, Transport
+from ..errors import NotFoundError
 
 M = TypeVar("M", bound=BaseModel)
 
@@ -62,3 +63,34 @@ class BaseResource:
         data = await self._raw(name, **kwargs)
         result: list[M] = _list_adapter(model).validate_python(data if data is not None else [])
         return result
+
+    async def _many_or_empty(self, name: str, model: type[M], **kwargs: Any) -> list[M]:
+        """Список; 404 («ничего не найдено») превращается в []."""
+        try:
+            return await self._many(name, model, **kwargs)
+        except NotFoundError:
+            return []
+
+    async def _one_or_none(self, name: str, model: type[M], **kwargs: Any) -> M | None:
+        """Объект; 404 превращается в None."""
+        try:
+            return await self._one(name, model, **kwargs)
+        except NotFoundError:
+            return None
+
+
+def body(model: Any) -> Any:
+    """Тело запроса из модели (camelCase, без None) или None."""
+    return model.to_api() if model is not None else None
+
+
+def warn_without_objects(objects: Any, where: str) -> None:
+    if not objects:
+        import warnings
+
+        warnings.warn(
+            f"{where}: запрос без фильтра по объекту может быть тяжёлым для сервера (502 после ~30 с). "
+            "Укажите objects / object_id.",
+            UserWarning,
+            stacklevel=3,
+        )

@@ -1,0 +1,47 @@
+{
+ "types": [
+  "obj"
+ ],
+ "fields": {
+  "attachments": {
+   "types": [
+    "list"
+   ]
+  },
+  "createdAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "id": {
+   "types": [
+    "str"
+   ]
+  },
+  "links": {
+   "types": [
+    "obj"
+   ]
+  },
+  "modifiedAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "number": {
+   "types": [
+    "int"
+   ]
+  },
+  "objectId": {
+   "types": [
+    "str"
+   ]
+  },
+  "stage": {
+   "types": [
+    "str"
+   ]
+  }
+ }
+}

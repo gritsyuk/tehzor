@@ -1,0 +1,184 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "activeGroup": {
+    "types": [
+     "str"
+    ]
+   },
+   "attachments": {
+    "types": [
+     "list"
+    ]
+   },
+   "createdAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "createdFromEntity": {
+    "types": [
+     "str"
+    ]
+   },
+   "description": {
+    "types": [
+     "str"
+    ]
+   },
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "initialGroup": {
+    "types": [
+     "str"
+    ]
+   },
+   "links": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "workAcceptanceId": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "modifiedAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "name": {
+    "types": [
+     "str"
+    ]
+   },
+   "object": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "respUsers": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "color": {
+       "types": [
+        "str"
+       ]
+      },
+      "displayName": {
+       "types": [
+        "str"
+       ]
+      },
+      "fullName": {
+       "types": [
+        "str"
+       ]
+      },
+      "id": {
+       "types": [
+        "str"
+       ]
+      },
+      "position": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   },
+   "status": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "taskIntervalEnd": {
+    "types": [
+     "int"
+    ]
+   },
+   "taskIntervalStart": {
+    "types": [
+     "int"
+    ]
+   },
+   "taskPriority": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "taskType": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   }
+  }
+ }
+}

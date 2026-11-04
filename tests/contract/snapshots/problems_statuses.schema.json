@@ -1,0 +1,22 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "name": {
+    "types": [
+     "str"
+    ]
+   }
+  }
+ }
+}

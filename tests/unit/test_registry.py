@@ -44,7 +44,21 @@ def test_spec_kinds_match_http_semantics() -> None:
             assert op.kind == "R"
 
 
-@pytest.mark.xfail(reason="этап 4: реализованы не все 73 операции", strict=False)
+def _is_read(method: str, path: str) -> bool:
+    return method == "GET" or ("/get-" in path and not path.endswith("get-or-create"))
+
+
+def test_all_declared_read_operations_implemented() -> None:
+    implemented = {op.key for op in REGISTRY.all() if op.documented}
+    declared_reads = {k for k in SPEC_OPS if _is_read(*k)}
+    assert len(declared_reads) == 49
+    assert not sorted(declared_reads - implemented)
+    for op in REGISTRY.all():
+        if op.documented:
+            assert (op.kind == "R") == _is_read(op.method, op.path), op.tool_name
+
+
+@pytest.mark.xfail(reason="этап 4: изменяющие операции (24) ещё не реализованы", strict=False)
 def test_all_declared_operations_implemented() -> None:
     implemented = {op.key for op in REGISTRY.all() if op.documented}
     missing = sorted(set(SPEC_OPS) - implemented)

@@ -1,0 +1,42 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "color": {
+    "types": [
+     "str"
+    ]
+   },
+   "createdAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "modifiedAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "name": {
+    "types": [
+     "str"
+    ]
+   },
+   "problemTagsSetId": {
+    "types": [
+     "str"
+    ]
+   }
+  }
+ }
+}

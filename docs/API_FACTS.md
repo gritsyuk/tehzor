@@ -75,8 +75,42 @@
 |---|---|
 | `GET /health/readiness` | 200, в `openapi.json` отсутствует |
 
+## Итог контрактных тестов (2026-11-04)
+
+`pytest -m contract` на двух объектах (один со всеми стадиями): **52 теста пройдено, 1 пропущен**.
+Все 49 читающих операций и `/health/readiness` разобраны моделями **без неописанных полей**.
+Пропуск — `spaces_meters`: в проверенных помещениях нет приборов учёта.
+
+Расхождений со спецификацией: **236** (информационно, спецификация не источник истины):
+
+| Вид | Кол-во | Примеры |
+|---|---|---|
+| spec называет поле обязательным, а оно приходит не всегда | 164 | почти все поля нарушений, задач, приёмок; `customFields` |
+| поля нет в spec | 60 | `processId`, `color`, `employers`, `reopenedTimes`, `registrationDate`, `createdFromEntity`, `shared`, `checkListName`… |
+| другой тип | 12 | `attachments[]`: объект, а не строка; `watchers[]`: строка, а не объект; `/contract-forms`, `/space-types-decorations`, `/space-statuses`: список, а не объект |
+
+Полный отчёт по полям: `TEHZOR_CONTRACT_REPORT=reports/contract pytest -m contract` → `reports/contract.md`.
+Снимки фактических схем (только поля и типы, без значений): `tests/contract/snapshots/`.
+
+## Подтверждённые особенности
+
+| Эндпоинт / поле | Факт |
+|---|---|
+| `Space.typeDecoration` | объект `{id, name}` (подтверждено); в запросе изменения передаётся id |
+| `GET /spaces/{id}/meters` | 404 «приборы не найдены», если приборов нет (400 — нет помещения); клиент возвращает `[]` |
+| `GET /problems/{id}/reply` | 404, если официального ответа нет; клиент возвращает `None`. Ответ — комментарий (`ancestors`, `number`, `official`) |
+| `GET /owner-acceptances/{id}` | `resolution` = `{id, name}` (spec: `_id`); `status`, `spaceOwner` не встречались; есть `localId` |
+| `GET /warranty-claims/{id}` | `status` — строка; в `/spaces/{id}/warranty-claims` — объект `{id, name}`; есть `registrationDate` |
+| `GET /work-acceptances/{id}` | нет `acceptors` (есть в списке), есть `*Leader`; пользователи только `{id, fullName}` |
+| `GET /warranty-claims/{id}/problems` | сокращённая форма нарушения: id, number, status, description, plannedFixDate, categoryId |
+| `GET /tasks/{id}` | у пользователей нет `fullName`; есть `link` |
+| `Comment.number` | бывает `null` |
+| `GET /check-lists/item-status` | есть `checkListName` (нет в spec) |
+| `/health/readiness` | `{status, info, error, details}` |
+
 ## Не проверено
 
-- Остальные 43 читающих эндпоинта: их проверят контрактные тесты.
-- Изменяющие операции (27): **на живом API не проверяются**, только на заглушках.
+- `GET /spaces/{id}/meters` с реальными приборами (нужен id помещения с приборами учёта).
+- Формат дат `modifiedAtFrom/To` в фильтре нарушений (spec: строка).
+- Изменяющие операции (24: 23 записи и 1 удаление): **на живом API не проверяются**, только на заглушках.
 - Код ответа (200 или 201) у `POST /spaces/{id}` и `POST /space-owners`: без записи проверить нельзя, клиент принимает любой 2xx.

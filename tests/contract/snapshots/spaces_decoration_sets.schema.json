@@ -1,0 +1,54 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "name": {
+    "types": [
+     "str"
+    ]
+   },
+   "spaceTypesDecorations": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "id": {
+       "types": [
+        "str"
+       ]
+      },
+      "name": {
+       "types": [
+        "str"
+       ]
+      },
+      "spaceTypes": {
+       "types": [
+        "list"
+       ],
+       "items": {
+        "types": [
+         "str"
+        ]
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,49 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "name": {
+    "types": [
+     "str"
+    ]
+   },
+   "spaceStatuses": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "id": {
+       "types": [
+        "str"
+       ]
+      },
+      "name": {
+       "types": [
+        "str"
+       ]
+      },
+      "stage": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   }
+  }
+ }
+}

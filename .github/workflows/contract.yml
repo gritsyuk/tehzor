@@ -1,0 +1,38 @@
+name: Contract (живое API, только чтение)
+
+# Проверяет, что фактические ответы API разбираются моделями, и сообщает о расхождениях
+# со спецификацией и о дрейфе API. Изменяющие операции здесь не вызываются никогда:
+# клиент работает в режиме read_only, транспорт пропускает только операции kind == "R".
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e ".[dev]"
+      - name: contract tests
+        env:
+          TEHZOR_API_KEY: ${{ secrets.TEHZOR_API_KEY }}
+          TEHZOR_SEED_OBJECT_ID: ${{ secrets.TEHZOR_SEED_OBJECT_ID }}
+          TEHZOR_CONTRACT_REPORT: reports/contract
+        run: pytest -m contract -q
+      - name: отчёт
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contract-report
+          path: reports/
+      - name: дрейф снимков
+        if: always()
+        run: git diff --stat -- tests/contract/snapshots || true

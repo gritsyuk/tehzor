@@ -1,0 +1,17 @@
+{
+ "types": [
+  "obj"
+ ],
+ "fields": {
+  "checkListName": {
+   "types": [
+    "str"
+   ]
+  },
+  "statusName": {
+   "types": [
+    "str"
+   ]
+  }
+ }
+}

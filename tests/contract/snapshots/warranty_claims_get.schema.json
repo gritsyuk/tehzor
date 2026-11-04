@@ -1,0 +1,37 @@
+{
+ "types": [
+  "obj"
+ ],
+ "fields": {
+  "createdAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "id": {
+   "types": [
+    "str"
+   ]
+  },
+  "modifiedAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "number": {
+   "types": [
+    "int"
+   ]
+  },
+  "registrationDate": {
+   "types": [
+    "int"
+   ]
+  },
+  "status": {
+   "types": [
+    "str"
+   ]
+  }
+ }
+}

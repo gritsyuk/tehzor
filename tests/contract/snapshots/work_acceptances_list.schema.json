@@ -1,0 +1,207 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "acceptanceIntervalEnd": {
+    "types": [
+     "int"
+    ]
+   },
+   "acceptanceIntervalStart": {
+    "types": [
+     "int"
+    ]
+   },
+   "acceptors": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "color": {
+       "types": [
+        "str"
+       ]
+      },
+      "displayName": {
+       "types": [
+        "str"
+       ]
+      },
+      "fullName": {
+       "types": [
+        "str"
+       ]
+      },
+      "id": {
+       "types": [
+        "str"
+       ]
+      },
+      "position": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   },
+   "acceptorsActiveGroup": {
+    "types": [
+     "str"
+    ]
+   },
+   "acceptorsInitialGroup": {
+    "types": [
+     "str"
+    ]
+   },
+   "actualAcceptanceDate": {
+    "types": [
+     "int"
+    ]
+   },
+   "attachments": {
+    "types": [
+     "list"
+    ]
+   },
+   "category": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "createdAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "description": {
+    "types": [
+     "str"
+    ]
+   },
+   "frontType": {
+    "types": [
+     "str"
+    ]
+   },
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "modifiedAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "number": {
+    "types": [
+     "int"
+    ]
+   },
+   "objectId": {
+    "types": [
+     "str"
+    ]
+   },
+   "physicalWorkScope": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "unitId": {
+      "types": [
+       "str"
+      ]
+     },
+     "unitName": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "planPhysicalWorkScope": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "value": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "reopenedTimes": {
+    "types": [
+     "int"
+    ]
+   },
+   "spaceIds": {
+    "types": [
+     "list"
+    ]
+   },
+   "stage": {
+    "types": [
+     "str"
+    ]
+   },
+   "status": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "structureIds": {
+    "types": [
+     "list"
+    ]
+   },
+   "type": {
+    "types": [
+     "str"
+    ]
+   },
+   "workScope": {
+    "types": [
+     "str"
+    ]
+   }
+  }
+ }
+}

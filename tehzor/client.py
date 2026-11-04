@@ -8,7 +8,18 @@ from types import TracebackType
 
 from ._transport import DEFAULT_BASE_URL, Transport
 from .models.objects import HealthStatus
+from .resources.catalog import CategoriesResource, CheckListsResource, ChecksResource, TagsResource
 from .resources.objects import ObjectsResource, ServiceResource
+from .resources.problems import ProblemsResource
+from .resources.spaces import SpacesResource
+from .resources.work import (
+    CommentsResource,
+    InternalAcceptancesResource,
+    OwnerAcceptancesResource,
+    TasksResource,
+    WarrantyClaimsResource,
+    WorkAcceptancesResource,
+)
 
 
 class TehzorClient:
@@ -67,8 +78,21 @@ class TehzorClient:
             read_only=read_only,
             trust_env=trust_env,
         )
-        self.objects = ObjectsResource(self.transport)
-        self._service = ServiceResource(self.transport)
+        t = self.transport
+        self.objects = ObjectsResource(t)
+        self.problems = ProblemsResource(t)
+        self.spaces = SpacesResource(t)
+        self.work_acceptances = WorkAcceptancesResource(t)
+        self.internal_acceptances = InternalAcceptancesResource(t)
+        self.owner_acceptances = OwnerAcceptancesResource(t)
+        self.warranty_claims = WarrantyClaimsResource(t)
+        self.tasks = TasksResource(t)
+        self.comments = CommentsResource(t)
+        self.categories = CategoriesResource(t)
+        self.tags = TagsResource(t)
+        self.check_lists = CheckListsResource(t)
+        self.checks = ChecksResource(t)
+        self._service = ServiceResource(t)
 
     @property
     def read_only(self) -> bool:

@@ -1,0 +1,27 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "measureUnit": {
+    "types": [
+     "str"
+    ]
+   },
+   "name": {
+    "types": [
+     "str"
+    ]
+   }
+  }
+ }
+}

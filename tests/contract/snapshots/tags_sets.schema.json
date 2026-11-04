@@ -1,0 +1,57 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "companyId": {
+    "types": [
+     "str"
+    ]
+   },
+   "createdAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "modifiedAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "name": {
+    "types": [
+     "str"
+    ]
+   },
+   "objects": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "str"
+     ]
+    }
+   },
+   "stages": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  }
+ }
+}

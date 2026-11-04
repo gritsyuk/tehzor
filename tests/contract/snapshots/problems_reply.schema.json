@@ -1,0 +1,182 @@
+{
+ "types": [
+  "obj"
+ ],
+ "fields": {
+  "ancestors": {
+   "types": [
+    "list"
+   ]
+  },
+  "attachments": {
+   "types": [
+    "list"
+   ],
+   "items": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "full": {
+      "types": [
+       "obj"
+      ],
+      "fields": {
+       "id": {
+        "types": [
+         "str"
+        ]
+       },
+       "name": {
+        "types": [
+         "str"
+        ]
+       },
+       "size": {
+        "types": [
+         "int"
+        ]
+       },
+       "type": {
+        "types": [
+         "str"
+        ]
+       },
+       "url": {
+        "types": [
+         "str"
+        ]
+       }
+      }
+     },
+     "id": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   }
+  },
+  "createdAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "createdBy": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "color": {
+     "types": [
+      "str"
+     ]
+    },
+    "displayName": {
+     "types": [
+      "str"
+     ]
+    },
+    "fullName": {
+     "types": [
+      "str"
+     ]
+    },
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "position": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "description": {
+   "types": [
+    "str"
+   ]
+  },
+  "id": {
+   "types": [
+    "str"
+   ]
+  },
+  "links": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "checkId": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "modifiedAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "modifiedBy": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "color": {
+     "types": [
+      "str"
+     ]
+    },
+    "displayName": {
+     "types": [
+      "str"
+     ]
+    },
+    "fullName": {
+     "types": [
+      "str"
+     ]
+    },
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "position": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "number": {
+   "types": [
+    "int"
+   ]
+  },
+  "objectId": {
+   "types": [
+    "str"
+   ]
+  },
+  "official": {
+   "types": [
+    "bool"
+   ]
+  },
+  "problemId": {
+   "types": [
+    "str"
+   ]
+  },
+  "stage": {
+   "types": [
+    "str"
+   ]
+  }
+ }
+}

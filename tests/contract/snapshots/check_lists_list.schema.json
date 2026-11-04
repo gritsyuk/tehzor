@@ -1,0 +1,118 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "categories": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "id": {
+       "types": [
+        "str"
+       ]
+      },
+      "name": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   },
+   "companyId": {
+    "types": [
+     "str"
+    ]
+   },
+   "frontType": {
+    "types": [
+     "str"
+    ]
+   },
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "name": {
+    "types": [
+     "str"
+    ]
+   },
+   "objects": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "id": {
+       "types": [
+        "str"
+       ]
+      },
+      "name": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   },
+   "processId": {
+    "types": [
+     "str"
+    ]
+   },
+   "spaceTypes": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "str"
+     ]
+    }
+   },
+   "stage": {
+    "types": [
+     "str"
+    ]
+   },
+   "typeDecoration": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "id": {
+       "types": [
+        "str"
+       ]
+      },
+      "name": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   }
+  }
+ }
+}

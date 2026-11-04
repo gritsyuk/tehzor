@@ -1,0 +1,272 @@
+{
+ "types": [
+  "obj"
+ ],
+ "fields": {
+  "activeGroup": {
+   "types": [
+    "str"
+   ]
+  },
+  "activeGroupLeader": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "displayName": {
+     "types": [
+      "str"
+     ]
+    },
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "position": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "attachments": {
+   "types": [
+    "list"
+   ]
+  },
+  "createdAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "createdBy": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "displayName": {
+     "types": [
+      "str"
+     ]
+    },
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "position": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "createdFromEntity": {
+   "types": [
+    "str"
+   ]
+  },
+  "description": {
+   "types": [
+    "str"
+   ]
+  },
+  "id": {
+   "types": [
+    "str"
+   ]
+  },
+  "initialGroup": {
+   "types": [
+    "str"
+   ]
+  },
+  "initialGroupLeader": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "displayName": {
+     "types": [
+      "str"
+     ]
+    },
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "position": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "link": {
+   "types": [
+    "str"
+   ]
+  },
+  "links": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "spaceIds": {
+     "types": [
+      "list"
+     ]
+    },
+    "workAcceptanceId": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "modifiedAt": {
+   "types": [
+    "int"
+   ]
+  },
+  "modifiedBy": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "displayName": {
+     "types": [
+      "str"
+     ]
+    },
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "position": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "name": {
+   "types": [
+    "str"
+   ]
+  },
+  "object": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "externalId": {
+     "types": [
+      "str"
+     ]
+    },
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "name": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "respUsers": {
+   "types": [
+    "list"
+   ],
+   "items": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "displayName": {
+      "types": [
+       "str"
+      ]
+     },
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "position": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   }
+  },
+  "status": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "name": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "taskIntervalEnd": {
+   "types": [
+    "int"
+   ]
+  },
+  "taskIntervalStart": {
+   "types": [
+    "int"
+   ]
+  },
+  "taskPriority": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "name": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  },
+  "taskType": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "id": {
+     "types": [
+      "str"
+     ]
+    },
+    "name": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  }
+ }
+}

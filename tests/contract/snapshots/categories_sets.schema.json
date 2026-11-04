@@ -1,0 +1,47 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "name": {
+    "types": [
+     "str"
+    ]
+   },
+   "objects": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "str"
+     ]
+    }
+   },
+   "shared": {
+    "types": [
+     "bool"
+    ]
+   },
+   "stages": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,472 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "actualFixDate": {
+    "types": [
+     "int"
+    ]
+   },
+   "attachments": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "full": {
+       "types": [
+        "obj"
+       ],
+       "fields": {
+        "id": {
+         "types": [
+          "str"
+         ]
+        },
+        "name": {
+         "types": [
+          "str"
+         ]
+        },
+        "size": {
+         "types": [
+          "int"
+         ]
+        },
+        "type": {
+         "types": [
+          "str"
+         ]
+        },
+        "url": {
+         "types": [
+          "str"
+         ]
+        }
+       }
+      },
+      "id": {
+       "types": [
+        "str"
+       ]
+      },
+      "preview": {
+       "types": [
+        "obj"
+       ],
+       "fields": {
+        "id": {
+         "types": [
+          "str"
+         ]
+        },
+        "name": {
+         "types": [
+          "str"
+         ]
+        },
+        "size": {
+         "types": [
+          "int"
+         ]
+        },
+        "type": {
+         "types": [
+          "str"
+         ]
+        },
+        "url": {
+         "types": [
+          "str"
+         ]
+        }
+       }
+      }
+     }
+    }
+   },
+   "category": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "categoryId": {
+    "types": [
+     "str"
+    ]
+   },
+   "createdAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "createdBy": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "color": {
+      "types": [
+       "str"
+      ]
+     },
+     "displayName": {
+      "types": [
+       "str"
+      ]
+     },
+     "fullName": {
+      "types": [
+       "str"
+      ]
+     },
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "position": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "critical": {
+    "types": [
+     "bool"
+    ]
+   },
+   "description": {
+    "types": [
+     "str"
+    ]
+   },
+   "displayLocation": {
+    "types": [
+     "str"
+    ]
+   },
+   "floor": {
+    "types": [
+     "str"
+    ]
+   },
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "inspectors": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "id": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   },
+   "links": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "checkId": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "modifiedAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "modifiedBy": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "color": {
+      "types": [
+       "str"
+      ]
+     },
+     "displayName": {
+      "types": [
+       "str"
+      ]
+     },
+     "fullName": {
+      "types": [
+       "str"
+      ]
+     },
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "position": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "number": {
+    "types": [
+     "int"
+    ]
+   },
+   "object": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "externalId": {
+      "types": [
+       "str"
+      ]
+     },
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "performers": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "color": {
+       "types": [
+        "str"
+       ]
+      },
+      "displayName": {
+       "types": [
+        "str"
+       ]
+      },
+      "fullName": {
+       "types": [
+        "str"
+       ]
+      },
+      "id": {
+       "types": [
+        "str"
+       ]
+      },
+      "position": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   },
+   "performersActiveGroup": {
+    "types": [
+     "str"
+    ]
+   },
+   "performersActiveGroupLeader": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "color": {
+      "types": [
+       "str"
+      ]
+     },
+     "displayName": {
+      "types": [
+       "str"
+      ]
+     },
+     "fullName": {
+      "types": [
+       "str"
+      ]
+     },
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "position": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "performersInitialGroup": {
+    "types": [
+     "str"
+    ]
+   },
+   "performersInitialGroupLeader": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "color": {
+      "types": [
+       "str"
+      ]
+     },
+     "displayName": {
+      "types": [
+       "str"
+      ]
+     },
+     "fullName": {
+      "types": [
+       "str"
+      ]
+     },
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "position": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "plan": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "plannedFixDate": {
+    "types": [
+     "int"
+    ]
+   },
+   "prescription": {
+    "types": [
+     "str"
+    ]
+   },
+   "problemTags": {
+    "types": [
+     "list"
+    ]
+   },
+   "processId": {
+    "types": [
+     "str"
+    ]
+   },
+   "reason": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "regulatoryStandard": {
+      "types": [
+       "str"
+      ]
+     },
+     "value": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "stage": {
+    "types": [
+     "str"
+    ]
+   },
+   "status": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "watchers": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "str"
+     ]
+    }
+   }
+  }
+ }
+}

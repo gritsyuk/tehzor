@@ -1,0 +1,57 @@
+{
+ "types": [
+  "obj"
+ ],
+ "fields": {
+  "address": {
+   "types": [
+    "str"
+   ]
+  },
+  "city": {
+   "types": [
+    "str"
+   ]
+  },
+  "companyId": {
+   "types": [
+    "str"
+   ]
+  },
+  "customFields": {
+   "types": [
+    "null"
+   ]
+  },
+  "externalId": {
+   "types": [
+    "str"
+   ]
+  },
+  "fullName": {
+   "types": [
+    "str"
+   ]
+  },
+  "id": {
+   "types": [
+    "str"
+   ]
+  },
+  "name": {
+   "types": [
+    "str"
+   ]
+  },
+  "parentId": {
+   "types": [
+    "str"
+   ]
+  },
+  "stage": {
+   "types": [
+    "str"
+   ]
+  }
+ }
+}

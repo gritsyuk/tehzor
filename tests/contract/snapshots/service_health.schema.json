@@ -1,0 +1,55 @@
+{
+ "types": [
+  "obj"
+ ],
+ "fields": {
+  "details": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "mongodb": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "status": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   }
+  },
+  "error": {
+   "types": [
+    "obj"
+   ]
+  },
+  "info": {
+   "types": [
+    "obj"
+   ],
+   "fields": {
+    "mongodb": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "status": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   }
+  },
+  "status": {
+   "types": [
+    "str"
+   ]
+  }
+ }
+}

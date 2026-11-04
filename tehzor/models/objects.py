@@ -44,3 +44,6 @@ class HealthStatus(TehzorModel):
     """Ответ `GET /health/readiness` (метод не описан в openapi.json)."""
 
     status: str | None = None
+    info: dict[str, Any] | None = None
+    error: dict[str, Any] | None = None
+    details: dict[str, Any] | None = None
