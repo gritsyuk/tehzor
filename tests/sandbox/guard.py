@@ -57,6 +57,16 @@ class SandboxTransport(Transport):
     ) -> None:
         if op.kind == "R":
             return
+        bodies = json if isinstance(json, list) else [json]
+        for b in bodies:
+            if isinstance(b, dict):
+                links = b.get("links") if isinstance(b.get("links"), dict) else {}
+                refs = [b.get("objectId"), b.get("spaceId"), *(b.get("spaceIds") or []), links.get("spaceId")]
+                foreign_refs = [r for r in refs if r and r not in self.created and r not in self.allowed_ids]
+                if foreign_refs:
+                    raise SandboxViolation(
+                        f"песочница: {op.tool_name} ссылается на объект/помещение {foreign_refs} вне песочницы"
+                    )
         if isinstance(json, dict) and json.get("unbindExistingOwners"):
             # отвязало бы реальных собственников помещения — это изменение существующих данных
             raise SandboxViolation("песочница: unbindExistingOwners=true запрещён — запрос не отправлен")
