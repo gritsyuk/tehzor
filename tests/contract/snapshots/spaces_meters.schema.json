@@ -1,0 +1,162 @@
+{
+ "types": [
+  "list"
+ ],
+ "items": {
+  "types": [
+   "obj"
+  ],
+  "fields": {
+   "consumptions": {
+    "types": [
+     "list"
+    ],
+    "items": {
+     "types": [
+      "obj"
+     ],
+     "fields": {
+      "createdAt": {
+       "types": [
+        "int"
+       ]
+      },
+      "createdBy": {
+       "types": [
+        "obj"
+       ],
+       "fields": {
+        "displayName": {
+         "types": [
+          "str"
+         ]
+        },
+        "fullName": {
+         "types": [
+          "str"
+         ]
+        },
+        "id": {
+         "types": [
+          "str"
+         ]
+        },
+        "position": {
+         "types": [
+          "str"
+         ]
+        }
+       }
+      },
+      "id": {
+       "types": [
+        "str"
+       ]
+      },
+      "modifiedAt": {
+       "types": [
+        "int"
+       ]
+      },
+      "tariff": {
+       "types": [
+        "obj"
+       ],
+       "fields": {
+        "id": {
+         "types": [
+          "str"
+         ]
+        },
+        "name": {
+         "types": [
+          "str"
+         ]
+        }
+       }
+      },
+      "value": {
+       "types": [
+        "str"
+       ]
+      }
+     }
+    }
+   },
+   "createdAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "createdBy": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "displayName": {
+      "types": [
+       "str"
+      ]
+     },
+     "fullName": {
+      "types": [
+       "str"
+      ]
+     },
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "position": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   },
+   "description": {
+    "types": [
+     "str"
+    ]
+   },
+   "id": {
+    "types": [
+     "str"
+    ]
+   },
+   "modifiedAt": {
+    "types": [
+     "int"
+    ]
+   },
+   "serialNumber": {
+    "types": [
+     "str"
+    ]
+   },
+   "type": {
+    "types": [
+     "obj"
+    ],
+    "fields": {
+     "id": {
+      "types": [
+       "str"
+      ]
+     },
+     "measureUnit": {
+      "types": [
+       "str"
+      ]
+     },
+     "name": {
+      "types": [
+       "str"
+      ]
+     }
+    }
+   }
+  }
+ }
+}

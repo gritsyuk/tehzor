@@ -2,7 +2,8 @@
 
 Запуск:  pytest -m contract
 Нужно:   доступ к api.tehzor.ru, ключ (TEHZOR_API_KEY или прокси, подставляющий заголовок api-key),
-         TEHZOR_SEED_OBJECT_ID (один или несколько id объектов через запятую).
+         TEHZOR_SEED_OBJECT_ID (один или несколько id объектов через запятую),
+         TEHZOR_SEED_SPACE_ID (необязательно: помещения, проверяемые первыми, например с приборами учёта).
 Опции:   TEHZOR_CONTRACT_REPORT=reports/contract   — записать отчёт (.md и .json)
          TEHZOR_CONTRACT_UPDATE_SNAPSHOTS=1        — обновить снимки фактических схем
 
@@ -99,8 +100,9 @@ def _add(target: list[str], value: str | None) -> None:
         target.append(value)
 
 
-async def discover(objects: list[str]) -> Ids:
-    ids = Ids(objects=objects)
+async def discover(objects: list[str], spaces: list[str]) -> Ids:
+    # помещения из seeds идут первыми: на них проверяются meters, owner_acceptances, warranty_claims
+    ids = Ids(objects=objects, spaces=list(spaces))
     async with make_client() as c:
         for obj in objects:
             for p in await c.problems.list(ProblemFilters(objects=[obj]), limit=SAMPLE):
@@ -148,7 +150,12 @@ def ids() -> Ids:
     raw = os.environ.get("TEHZOR_SEED_OBJECT_ID") or os.environ.get("TEHZOR_SEED_OBJECT_IDS")
     if not raw:
         pytest.skip("не задан TEHZOR_SEED_OBJECT_ID")
-    return asyncio.run(discover([x.strip() for x in raw.split(",") if x.strip()]))
+    spaces = os.environ.get("TEHZOR_SEED_SPACE_ID", "")
+    return asyncio.run(discover(_split(raw), _split(spaces)))
+
+
+def _split(value: str) -> list[str]:
+    return [x.strip() for x in value.split(",") if x.strip()]
 
 
 @pytest.fixture
