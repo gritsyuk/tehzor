@@ -18,9 +18,12 @@
 | `POST /problems/get-problems?limit=1` без фильтра | **502 примерно через 31 с** (таймаут шлюза около 30 с) |
 | `POST /problems/get-problems?limit=1` с `{"objects": [<id объекта>]}` | 200 за 1,2 с |
 | `GET /spaces/{id}` | 200 за 0,2 с |
+| `GET /objects/{id}` | 200 за 1,2 с |
+| `POST /problems/get-problems?limit=100` с фильтром по объекту (крупный объект) | 200 за **14,9 с** — половина лимита шлюза |
 
 Вывод: списочные запросы делаются только с фильтром по объекту. 502 после долгого
-ожидания означает «запрос слишком тяжёлый», а не «повторите».
+ожидания означает «запрос слишком тяжёлый», а не «повторите». Время ответа растёт
+с `limit` (100 записей ≈ 15 с), поэтому размер страницы по умолчанию — **50**, а не 100.
 
 ## Форматы id
 
@@ -33,6 +36,13 @@
 Вывод: все id в моделях — обычная `str` без проверки формата. API переводит сущности
 на новые id постепенно.
 
+## Объект (`GetObjectDto`)
+
+| Поле | Спецификация | Факт |
+|---|---|---|
+| `customFields` | обязательный объект | `null` |
+| остальные (`id`, `externalId`, `name`, `fullName`, `parentId`, `companyId`, `stage`, `city`, `address`) | обязательные строки | строки (совпадает) |
+
 ## Нарушение (`GetProblemDto`)
 
 | Поле | Спецификация | Факт |
@@ -42,7 +52,8 @@
 | `watchers` | `UserDto[]` | `[str]` (id пользователей) |
 | `processId` | нет | есть, например `operational-control` |
 | `color` у `createdBy`, `modifiedBy`, `performers*` | нет | есть |
-| `links` | 12 обязательных ключей | только заполненные (например, `{checkId}`) |
+| `links` | 12 обязательных ключей | только заполненные: `{checkId}`; на стадии передачи `{spaceId, ownerAcceptanceId}`; на гарантии `{spaceId, warrantyClaimId}` |
+| `space`, `plan`, `actualFixDate`, `displayLocation` | — | приходят, если заполнены (выборка из 100 нарушений) |
 | `location`, `plan`, `floor`, `plannedFixDate`, `actualFixDate`, `displayLocation`… | обязательные | отсутствуют, если не заполнены |
 | `createdAt`, `modifiedAt` | number | int, миллисекунды (13 цифр) |
 | `stage` | enum | `building` (совпадает) |
