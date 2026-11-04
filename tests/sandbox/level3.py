@@ -22,7 +22,15 @@ from pathlib import Path
 from typing import Any
 
 from tehzor import PreparedRequest, TehzorClient
-from tehzor.enums import CommentType, ProblemStatus, ProcessId, Stage
+from tehzor.enums import (
+    CommentType,
+    OwnerAcceptanceResolution,
+    OwnerAcceptanceStatus,
+    ProblemStatus,
+    ProcessId,
+    Stage,
+)
+from tehzor.models.acceptances import OwnerAcceptanceCreate
 from tehzor.models.comments import CommentCreate, CommentFilters, CommentLinksInput
 from tehzor.models.problems import ProblemCreate, ProblemEdit
 from tehzor.models.spaces import SpaceEdit
@@ -221,6 +229,59 @@ async def space_status_restore(c: Ctx, dry: bool) -> Any:
     return result
 
 
+# --- группа d: передача собственнику по тестовому помещению ---------------------------------------
+
+
+async def _space_vs_snapshot(c: Ctx) -> None:
+    snap = _snapshot(c)
+    diff = _diff({k: v for k, v in snap.items() if not k.startswith("_")}, await _space_dump(c))
+    st = await c.thz.spaces.get_status(c.space)
+    print(
+        f"   помещение: статус {st.id} ({st.name}), как в снимке: {st.id == snap['_status_id']}; "
+        f"прочие отличия от снимка: {diff or 'нет'}"
+    )
+
+
+async def _show_oa(c: Ctx, oa_id: str) -> None:
+    oa = await c.thz.owner_acceptances.get(oa_id)
+    print(
+        f"   передача: номер={oa.number} статус={oa.status.name if oa.status else None} "
+        f"решение={oa.resolution.name if oa.resolution else None} помещение={oa.links.space_id if oa.links else None}"
+    )
+
+
+async def owner_acceptance_create(c: Ctx, dry: bool) -> Any:
+    _snapshot(c)
+    if dry:
+        before = await c.thz.spaces.owner_acceptances(c.space)
+        print(f"   передач у помещения сейчас: {len(before)}")
+    result = await c.thz.owner_acceptances.create(OwnerAcceptanceCreate(space_id=c.space, object_id=c.obj), dry_run=dry)
+    if not dry:
+        print(f"   ответ: {result!r}")
+        c.remember("owner_acceptance", result)
+        await _show_oa(c, result)
+        await _space_vs_snapshot(c)
+    return result
+
+
+async def owner_acceptance_status(c: Ctx, dry: bool) -> Any:
+    oa = c.created("owner_acceptance")
+    result = await c.thz.owner_acceptances.set_status(oa, OwnerAcceptanceStatus.IN_PROGRESS, dry_run=dry)
+    if not dry:
+        await _show_oa(c, oa)
+        await _space_vs_snapshot(c)
+    return result
+
+
+async def owner_acceptance_resolution(c: Ctx, dry: bool) -> Any:
+    oa = c.created("owner_acceptance")
+    result = await c.thz.owner_acceptances.set_resolution(oa, OwnerAcceptanceResolution.UNDEFINED, dry_run=dry)
+    if not dry:
+        await _show_oa(c, oa)
+        await _space_vs_snapshot(c)
+    return result
+
+
 STEPS: dict[str, Step] = {
     "problem-building-create": problem_building_create,
     "problem-building-edit": problem_building_edit,
@@ -231,6 +292,9 @@ STEPS: dict[str, Step] = {
     "space-edit-restore": space_edit_restore,
     "space-status": space_status,
     "space-status-restore": space_status_restore,
+    "owner-acceptance-create": owner_acceptance_create,
+    "owner-acceptance-status": owner_acceptance_status,
+    "owner-acceptance-resolution": owner_acceptance_resolution,
 }
 
 
