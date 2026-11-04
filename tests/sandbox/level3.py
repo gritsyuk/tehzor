@@ -25,6 +25,7 @@ from tehzor import PreparedRequest, TehzorClient
 from tehzor.enums import CommentType, ProblemStatus, ProcessId, Stage
 from tehzor.models.comments import CommentCreate, CommentFilters, CommentLinksInput
 from tehzor.models.problems import ProblemCreate, ProblemEdit
+from tehzor.models.spaces import SpaceEdit
 
 from .guard import SandboxTransport, describe
 
@@ -136,11 +137,100 @@ async def problem_building_close(c: Ctx, dry: bool) -> Any:
     return result
 
 
+# --- группа C: тестовое помещение (обратимо, значения восстановления — только из снимка) -------------
+
+VOLATILE = {"modifiedAt", "modifiedBy"}
+
+
+async def _space_dump(c: Ctx) -> dict[str, Any]:
+    space = await c.thz.spaces.get(c.space)
+    return space.model_dump(by_alias=True, exclude_none=True, mode="json")
+
+
+def _diff(before: dict[str, Any], after: dict[str, Any]) -> dict[str, Any]:
+    keys = (set(before) | set(after)) - VOLATILE
+    return {k: (before.get(k), after.get(k)) for k in sorted(keys) if before.get(k) != after.get(k)}
+
+
+def _snapshot(c: Ctx) -> dict[str, Any]:
+    snap = c.state.get("original_space")
+    if not snap or snap.get("id") != c.space:
+        raise SystemExit("нет снимка помещения — сначала выполните шаг space-snapshot")
+    return dict(snap)
+
+
+async def space_snapshot(c: Ctx, dry: bool) -> Any:
+    """Только чтение: сохраняет исходное состояние помещения для восстановления."""
+    if c.state.get("original_space"):
+        print("   снимок уже есть — не перезаписываю (иначе потеряем исходные значения)")
+        return None
+    dump = await _space_dump(c)
+    status = await c.thz.spaces.get_status(c.space)
+    dump["_status_id"] = status.id
+    print(f"   plannedArea={dump.get('plannedArea')!r} статус={status.id} ({status.name})")
+    if not dry:
+        c.state["original_space"] = dump
+        save_state(c.state)
+        print("   снимок сохранён в reports/sandbox-level3-state.json")
+    return None
+
+
+async def space_edit(c: Ctx, dry: bool) -> Any:
+    snap = _snapshot(c)
+    result = await c.thz.spaces.edit(c.space, SpaceEdit(planned_area=12.34), dry_run=dry)
+    if not dry:
+        print(
+            "   изменения относительно снимка:",
+            _diff({k: v for k, v in snap.items() if not k.startswith("_")}, await _space_dump(c)),
+        )
+    return result
+
+
+async def space_edit_restore(c: Ctx, dry: bool) -> Any:
+    snap = _snapshot(c)
+    original = snap.get("plannedArea")
+    if original is None:
+        raise SystemExit("в снимке нет plannedArea — восстановить нечем")
+    result = await c.thz.spaces.edit(c.space, SpaceEdit(planned_area=original), dry_run=dry)
+    if not dry:
+        diff = _diff({k: v for k, v in snap.items() if not k.startswith("_")}, await _space_dump(c))
+        print("   отличия от снимка после восстановления:", diff or "нет — помещение как было")
+    return result
+
+
+SPACE_STATUS_TEST = "6444e362d28e6c2b2bbf92aa"  # «Не осмотрено», стадия acceptance
+
+
+async def space_status(c: Ctx, dry: bool) -> Any:
+    snap = _snapshot(c)
+    if snap["_status_id"] == SPACE_STATUS_TEST:
+        raise SystemExit("тестовый статус совпадает с исходным — выберите другой")
+    result = await c.thz.spaces.set_status(c.space, SPACE_STATUS_TEST, dry_run=dry)
+    if not dry:
+        st = await c.thz.spaces.get_status(c.space)
+        print(f"   статус сейчас: {st.id} ({st.name})")
+    return result
+
+
+async def space_status_restore(c: Ctx, dry: bool) -> Any:
+    snap = _snapshot(c)
+    result = await c.thz.spaces.set_status(c.space, snap["_status_id"], dry_run=dry)
+    if not dry:
+        st = await c.thz.spaces.get_status(c.space)
+        print(f"   статус сейчас: {st.id} ({st.name}); совпадает со снимком: {st.id == snap['_status_id']}")
+    return result
+
+
 STEPS: dict[str, Step] = {
     "problem-building-create": problem_building_create,
     "problem-building-edit": problem_building_edit,
     "problem-building-comment": problem_building_comment,
     "problem-building-close": problem_building_close,
+    "space-snapshot": space_snapshot,
+    "space-edit": space_edit,
+    "space-edit-restore": space_edit_restore,
+    "space-status": space_status,
+    "space-status-restore": space_status_restore,
 }
 
 
