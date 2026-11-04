@@ -58,10 +58,10 @@ def test_all_declared_read_operations_implemented() -> None:
             assert (op.kind == "R") == _is_read(op.method, op.path), op.tool_name
 
 
-@pytest.mark.xfail(reason="этап 4: изменяющие операции (24) ещё не реализованы", strict=False)
 def test_all_declared_operations_implemented() -> None:
     implemented = {op.key for op in REGISTRY.all() if op.documented}
     missing = sorted(set(SPEC_OPS) - implemented)
+    assert len(implemented) == 73
     assert not missing, f"Не реализовано {len(missing)} из {len(SPEC_OPS)}: {missing[:5]}…"
 
 

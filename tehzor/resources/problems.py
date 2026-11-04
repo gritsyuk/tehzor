@@ -1,26 +1,57 @@
-"""Нарушения (problems). Изменяющие методы — этап 4."""
+"""Нарушения (problems). Изменяющие методы проверяются только на заглушках."""
 
 from __future__ import annotations
 
 import builtins
 from collections.abc import AsyncIterator
+from typing import Literal, overload
 
 from .._pagination import DEFAULT_PAGE_SIZE, iter_pages
 from .._registry import operation
+from .._transport import PreparedRequest
 from ..models.common import DictItem
-from ..models.problems import Problem, ProblemFilters, ProblemReply
+from ..models.problems import Problem, ProblemCreate, ProblemEdit, ProblemFilters, ProblemReply
 from ._base import BaseResource, body, warn_without_objects
 
 
 class ProblemsResource(BaseResource):
     resource_name = "problems"
 
+    @overload
+    async def create(self, data: ProblemCreate, *, dry_run: Literal[False] = False) -> Problem: ...
+
+    @overload
+    async def create(self, data: ProblemCreate, *, dry_run: Literal[True]) -> PreparedRequest: ...
+
+    @operation(
+        "ProblemsController_create", "POST", "/problems", kind="W", idempotent=False, summary="Создаёт нарушение"
+    )
+    async def create(self, data: ProblemCreate, *, dry_run: bool = False) -> Problem | PreparedRequest:
+        return await self._write("create", Problem, dry_run=dry_run, json=data.to_api())
+
+    @overload
+    async def edit(self, problem_id: str, data: ProblemEdit, *, dry_run: Literal[False] = False) -> Problem: ...
+
+    @overload
+    async def edit(self, problem_id: str, data: ProblemEdit, *, dry_run: Literal[True]) -> PreparedRequest: ...
+
+    @operation(
+        "ProblemsController_edit", "POST", "/problems/{id}", kind="W", idempotent=True, summary="Изменяет нарушение"
+    )
+    async def edit(self, problem_id: str, data: ProblemEdit, *, dry_run: bool = False) -> Problem | PreparedRequest:
+        return await self._write("edit", Problem, dry_run=dry_run, path_params={"id": problem_id}, json=data.to_api())
+
     @operation("ProblemsController_getOne", "GET", "/problems/{id}", summary="Возвращает нарушение по id")
     async def get(self, problem_id: str) -> Problem:
         return await self._one("get", Problem, path_params={"id": problem_id})
 
-    @operation("ProblemsController_getMany", "POST", "/problems/get-problems", paginated=True,
-               summary="Возвращает страницу нарушений по фильтрам (укажите objects)")
+    @operation(
+        "ProblemsController_getMany",
+        "POST",
+        "/problems/get-problems",
+        paginated=True,
+        summary="Возвращает страницу нарушений по фильтрам (укажите objects)",
+    )
     async def list(
         self,
         filters: ProblemFilters | None = None,
@@ -30,8 +61,9 @@ class ProblemsResource(BaseResource):
         user_id: str | None = None,
     ) -> builtins.list[Problem]:
         warn_without_objects(filters.objects if filters else None, "problems.list")
-        return await self._many("list", Problem, params={"limit": limit, "offset": offset, "userId": user_id},
-                                json=body(filters) or {})
+        return await self._many(
+            "list", Problem, params={"limit": limit, "offset": offset, "userId": user_id}, json=body(filters) or {}
+        )
 
     async def iter(
         self,
@@ -42,14 +74,19 @@ class ProblemsResource(BaseResource):
         user_id: str | None = None,
     ) -> AsyncIterator[Problem]:
         """Все нарушения по фильтрам, постранично."""
+
         async def fetch(limit: int, offset: int) -> builtins.list[Problem]:
             return await self.list(filters, limit=limit, offset=offset, user_id=user_id)
 
         async for item in iter_pages(fetch, page_size=page_size, max_items=max_items):
             yield item
 
-    @operation("ProblemsController_getReply", "GET", "/problems/{id}/reply",
-               summary="Последний официальный ответ по нарушению (None, если ответа нет)")
+    @operation(
+        "ProblemsController_getReply",
+        "GET",
+        "/problems/{id}/reply",
+        summary="Последний официальный ответ по нарушению (None, если ответа нет)",
+    )
     async def reply(self, problem_id: str) -> ProblemReply | None:
         return await self._one_or_none("reply", ProblemReply, path_params={"id": problem_id})
 

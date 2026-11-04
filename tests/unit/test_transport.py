@@ -350,6 +350,9 @@ def test_encode_query() -> None:
 
 def test_format_path() -> None:
     assert format_path("/spaces/{spaceId}/meters", {"spaceId": "a/b c"}) == "/spaces/a%2Fb%20c/meters"
+    from tehzor.enums import OwnerAcceptanceStatus
+
+    assert format_path("/x/{s}", {"s": OwnerAcceptanceStatus.IN_PROGRESS}) == "/x/in-progress"
     with pytest.raises(ValueError, match="spaceId"):
         format_path("/spaces/{spaceId}", {})
 

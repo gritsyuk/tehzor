@@ -10,8 +10,12 @@ from ._base import BaseResource
 class ObjectsResource(BaseResource):
     resource_name = "objects"
 
-    @operation("ObjectsController_getOne", "GET", "/objects/{id}",
-               summary="Возвращает объект по внутреннему (UUID) или внешнему id")
+    @operation(
+        "ObjectsController_getOne",
+        "GET",
+        "/objects/{id}",
+        summary="Возвращает объект по внутреннему (UUID) или внешнему id",
+    )
     async def get(self, object_id: str) -> ConstructionObject:
         return await self._one("get", ConstructionObject, path_params={"id": object_id})
 
@@ -29,7 +33,13 @@ class ServiceResource(BaseResource):
 
     resource_name = "service"
 
-    @operation("observed:HealthReadiness", "GET", "/health/readiness", documented=False, mcp=False,
-               summary="Проверка готовности API (не описан в официальной документации)")
+    @operation(
+        "observed:HealthReadiness",
+        "GET",
+        "/health/readiness",
+        documented=False,
+        mcp=False,
+        summary="Проверка готовности API (не описан в официальной документации)",
+    )
     async def health(self) -> HealthStatus:
         return await self._one("health", HealthStatus)

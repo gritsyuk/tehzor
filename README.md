@@ -23,12 +23,19 @@
 ```python
 import asyncio
 from tehzor import TehzorClient
+from tehzor.models.problems import ProblemFilters
+from tehzor.models.spaces import SpaceEdit
 
 
 async def main() -> None:
     async with TehzorClient(api_key="...") as thz:   # или переменная окружения TEHZOR_API_KEY
         print(await thz.objects.stages())
-        print(await thz.objects.get("<id объекта>"))
+        async for p in thz.problems.iter(ProblemFilters(objects=["<id объекта>"])):
+            print(p.number, p.status.name if p.status else None)
+
+        # изменения: сначала посмотреть запрос, ничего не отправляя
+        req = await thz.spaces.edit("<id помещения>", SpaceEdit(area_bti=55.1), dry_run=True)
+        print(req.describe(), req.json)
 
 
 asyncio.run(main())
@@ -51,6 +58,6 @@ python -m venv .venv && .venv/bin/pip install -e ".[dev]"
 | 1. Ядро: транспорт с защитой сервера, ошибки, реестр операций, пагинация | готово |
 | 2. Модели (по фактическим ответам) | готово |
 | 3. Контрактные тесты: 49 читающих операций на живом API | готово — 53 из 53 |
-| 4. Изменяющие операции (24) на заглушках | — |
+| 4. Изменяющие операции (24): `dry_run`, только на заглушках | готово — 73 из 73 операций |
 | 5. MCP-сервер | — |
 | 6. Релиз 0.2.0 | — |

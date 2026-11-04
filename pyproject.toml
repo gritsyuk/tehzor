@@ -68,6 +68,11 @@ strict = true
 packages = ["tehzor"]
 plugins = ["pydantic.mypy"]
 
+[[tool.mypy.overrides]]
+# изменяющие методы возвращают результат общего _write (Any); типы задают overload-сигнатуры
+module = "tehzor.resources.*"
+warn_return_any = false
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"

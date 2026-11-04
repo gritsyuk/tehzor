@@ -56,6 +56,22 @@ class BaseResource:
     ) -> PreparedRequest:
         return self._transport.prepare(self._op(name), path_params=path_params, params=params, json=json)
 
+    async def _write(
+        self,
+        name: str,
+        model: type[M] | None,
+        *,
+        dry_run: bool,
+        path_params: Mapping[str, Any] | None = None,
+        params: Mapping[str, QueryValue] | None = None,
+        json: Any = None,
+    ) -> Any:
+        """Изменяющая операция. dry_run=True — вернуть PreparedRequest, ничего не отправляя."""
+        if dry_run:
+            return self._prepare(name, path_params=path_params, params=params, json=json)
+        data = await self._raw(name, path_params=path_params, params=params, json=json)
+        return model.model_validate(data) if model is not None else data
+
     async def _one(self, name: str, model: type[M], **kwargs: Any) -> M:
         return model.model_validate(await self._raw(name, **kwargs))
 

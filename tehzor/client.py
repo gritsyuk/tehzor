@@ -11,6 +11,7 @@ from .models.objects import HealthStatus
 from .resources.catalog import CategoriesResource, CheckListsResource, ChecksResource, TagsResource
 from .resources.objects import ObjectsResource, ServiceResource
 from .resources.problems import ProblemsResource
+from .resources.space_owners import SpaceOwnersResource
 from .resources.spaces import SpacesResource
 from .resources.work import (
     CommentsResource,
@@ -82,6 +83,7 @@ class TehzorClient:
         self.objects = ObjectsResource(t)
         self.problems = ProblemsResource(t)
         self.spaces = SpacesResource(t)
+        self.space_owners = SpaceOwnersResource(t)
         self.work_acceptances = WorkAcceptancesResource(t)
         self.internal_acceptances = InternalAcceptancesResource(t)
         self.owner_acceptances = OwnerAcceptancesResource(t)

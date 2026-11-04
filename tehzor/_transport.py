@@ -171,7 +171,8 @@ def encode_query(params: Mapping[str, QueryValue] | None) -> tuple[tuple[str, st
 def format_path(template: str, path_params: Mapping[str, Any] | None) -> str:
     params = dict(path_params or {})
     try:
-        return template.format(**{k: quote(str(v), safe="") for k, v in params.items()})
+        # значения Enum подставляются по .value: str(Enum) дал бы «Класс.ЧЛЕН»
+        return template.format(**{k: quote(str(getattr(v, "value", v)), safe="") for k, v in params.items()})
     except KeyError as exc:
         raise ValueError(f"Не передан параметр пути {exc} для {template}") from None
 

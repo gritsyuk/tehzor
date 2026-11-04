@@ -6,7 +6,9 @@ from ._base import TehzorModel, TehzorRequest
 
 
 class SpaceOwner(TehzorModel):
-    id: str
+    """Собственник. spec: ответ на создание — CreatableSpaceOwner без id, поэтому id необязателен."""
+
+    id: str | None = None
     name: str | None = None
     email: str | None = None
     additional_email: str | None = None
