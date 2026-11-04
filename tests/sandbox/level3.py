@@ -17,12 +17,14 @@ import os
 import sys
 import time
 from collections.abc import Awaitable, Callable
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 from tehzor import PreparedRequest, TehzorClient
-from tehzor.enums import ProcessId, Stage
-from tehzor.models.problems import ProblemCreate
+from tehzor.enums import CommentType, ProblemStatus, ProcessId, Stage
+from tehzor.models.comments import CommentCreate, CommentFilters, CommentLinksInput
+from tehzor.models.problems import ProblemCreate, ProblemEdit
 
 from .guard import SandboxTransport, describe
 
@@ -85,8 +87,60 @@ async def problem_building_create(c: Ctx, dry: bool) -> Any:
     return result
 
 
+async def _show_problem(c: Ctx, pid: str) -> None:
+    p = await c.thz.problems.get(pid)
+    print(
+        f"   сейчас: номер={p.number} статус={p.status.id if p.status else None} "
+        f"срок={p.planned_fix_date} вид работ={p.category.name if p.category else None}"
+    )
+    print(f"   описание: {p.description}")
+
+
+async def problem_building_edit(c: Ctx, dry: bool) -> Any:
+    pid = c.created("problem_building")
+    due = datetime.now(timezone.utc).replace(hour=12, minute=0, second=0, microsecond=0) + timedelta(days=30)
+    data = ProblemEdit(
+        description=f"{c.tag} Тестовое нарушение (стадия строительства) — ИЗМЕНЕНО шагом 3.2. "
+        "Создано автотестом библиотеки tehzor, исполнять не нужно.",
+        planned_fix_date=due,
+    )
+    if dry:
+        await _show_problem(c, pid)
+    result = await c.thz.problems.edit(pid, data, dry_run=dry)
+    if not dry:
+        await _show_problem(c, pid)
+    return result
+
+
+async def problem_building_comment(c: Ctx, dry: bool) -> Any:
+    pid = c.created("problem_building")
+    data = CommentCreate(
+        comment_type_id=CommentType.PROBLEM_COMMENT,
+        links=CommentLinksInput(problem_id=pid),
+        official=False,
+        description=f"{c.tag} Тестовый комментарий (шаг 3.3).",
+    )
+    result = await c.thz.comments.create(data, dry_run=dry)
+    if not dry:
+        c.remember("comment_building", result.id)
+        found = await c.thz.comments.list(CommentFilters(problem_id=pid))
+        print(f"   комментарий id={result.id}; комментариев у нарушения: {len(found)}")
+    return result
+
+
+async def problem_building_close(c: Ctx, dry: bool) -> Any:
+    pid = c.created("problem_building")
+    result = await c.thz.problems.edit(pid, ProblemEdit(status=ProblemStatus.CLOSED), dry_run=dry)
+    if not dry:
+        await _show_problem(c, pid)
+    return result
+
+
 STEPS: dict[str, Step] = {
     "problem-building-create": problem_building_create,
+    "problem-building-edit": problem_building_edit,
+    "problem-building-comment": problem_building_comment,
+    "problem-building-close": problem_building_close,
 }
 
 
