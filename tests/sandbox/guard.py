@@ -52,9 +52,14 @@ class SandboxTransport(Transport):
         with self.journal.open("a", encoding="utf-8") as f:
             f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
-    def check(self, op: Operation, path_params: dict[str, Any] | None, params: dict[str, Any] | None) -> None:
+    def check(
+        self, op: Operation, path_params: dict[str, Any] | None, params: dict[str, Any] | None, json: Any = None
+    ) -> None:
         if op.kind == "R":
             return
+        if isinstance(json, dict) and json.get("unbindExistingOwners"):
+            # отвязало бы реальных собственников помещения — это изменение существующих данных
+            raise SandboxViolation("песочница: unbindExistingOwners=true запрещён — запрос не отправлен")
         targets = [str(getattr(v, "value", v)) for k, v in (path_params or {}).items() if k not in NON_ENTITY_PARAMS]
         targets += [str(v) for k, v in (params or {}).items() if k in ENTITY_QUERY_PARAMS and v is not None]
         foreign = [t for t in targets if t not in self.created and t not in self.allowed_ids]
@@ -64,7 +69,7 @@ class SandboxTransport(Transport):
             )
 
     async def execute(self, op: Operation, **kwargs: Any) -> Any:
-        self.check(op, kwargs.get("path_params"), kwargs.get("params"))
+        self.check(op, kwargs.get("path_params"), kwargs.get("params"), kwargs.get("json"))
         if op.kind == "R":
             return await super().execute(op, **kwargs)
         req = self.prepare(op, **kwargs)
