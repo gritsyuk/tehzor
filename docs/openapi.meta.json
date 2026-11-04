@@ -1,0 +1,9 @@
+{
+  "source": "https://api.tehzor.ru/docs-json",
+  "version": "1.44.0",
+  "fetched_at": "2026-11-04",
+  "sha256": "eb414905a9358dc966088100c2339af6de671ec5a1c8db4e3cbf805ced265823",
+  "operations": 73,
+  "paths": 68,
+  "schemas": 117
+}
