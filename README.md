@@ -1,37 +1,55 @@
 # ![logo Tehzor](https://tehzor.com/images/components/Header/logo.svg)
 ![PyPI - Version](https://img.shields.io/pypi/v/tehzor)
-## Обертка над  API системы Техзор на python (async/await)
-Официальная документация [https://api.tehzor.ru/docs](https://api.tehzor.ru/docs)
 
-## Установка
-```bash
-pip install -U tehzor
-```
+## Асинхронный Python-клиент Tehzor Public API
 
-## Примеры
-Обновления параметров квартир (площадь, плащадь БТИ, тип отделки ...). Предварительно необходимо знать id квартир и id типа отделки:
+> **Ветка в разработке (0.2.0.dev).** Идёт полное переписывание под все 73 метода
+> [Tehzor Public API](https://api.tehzor.ru/docs) и MCP-сервер для LLM-агентов.
+> План — [docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md), статус — ниже.
+> Опубликованная на PyPI версия 0.1.x имеет другой интерфейс (`TehzorAPI.create`).
+
+### Принципы
+
+* **Факт важнее спецификации.** `docs/openapi.json` — заявление разработчика API о доступных методах.
+  Модели строятся по фактическим ответам, которые проверяют контрактные тесты
+  (`pytest -m contract`). Найденные расхождения собраны в [docs/API_FACTS.md](docs/API_FACTS.md).
+* **Бережно к серверу.** Ограничение частоты и параллельности, повторы только для безопасных операций
+  в пределах бюджета времени, circuit breaker. Тяжёлые запросы (502 после ~30 с) не повторяются.
+* **Запись под контролем.** Режим `read_only=True` блокирует изменяющие операции до отправки.
+  Создание, изменение и удаление проверяются только на заглушках.
+
+### Быстрый старт
 
 ```python
 import asyncio
-from tehzor import TehzorAPI
-from examples.excel_apartments import result_flats
-
-API_KEY = "00000000-0000-0000-0000-000000000000"
-USER_ID = "123d7cdfc7ea123d123456ab"
+from tehzor import TehzorClient
 
 
-async def main():
-    thz = await TehzorAPI.create(api_key=API_KEY, user_id=USER_ID)
-
-    async with asyncio.TaskGroup() as tg:
-        for id, data in result_flats.items():
-            tg.create_task(thz.update_spaces(id, data.model_dump_json()))
-
-    await thz.session_close()
+async def main() -> None:
+    async with TehzorClient(api_key="...") as thz:   # или переменная окружения TEHZOR_API_KEY
+        print(await thz.objects.stages())
+        print(await thz.objects.get("<id объекта>"))
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
+asyncio.run(main())
 ```
-## Внимание
-Проект в разработке...  Происходят изменения в исходном API (изменяются наименование методов, свойств объектов) 
+
+### Разработка
+
+```bash
+python -m venv .venv && .venv/bin/pip install -e ".[dev]"
+.venv/bin/ruff check . && .venv/bin/mypy
+.venv/bin/pytest                  # unit-тесты, без сети
+.venv/bin/pytest -m contract      # живое API, только чтение (нужны ключ и TEHZOR_SEED_OBJECT_ID)
+```
+
+### Статус
+
+| Этап | Состояние |
+|---|---|
+| 0. Каркас (pyproject, ruff, mypy, CI) | готово |
+| 1. Ядро: транспорт с защитой сервера, ошибки, реестр операций, пагинация | готово |
+| 2–4. Модели и ресурсы (73 операции) | 3 из 73 (`objects`) + недокументированный `health` |
+| 3. Контрактные тесты | начаты (`objects`, `health`) |
+| 5. MCP-сервер | — |
+| 6. Релиз 0.2.0 | — |
