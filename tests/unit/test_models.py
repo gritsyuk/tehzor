@@ -68,3 +68,9 @@ def test_request_to_api_camel_case_without_none() -> None:
 def test_request_forbids_unknown_fields() -> None:
     with pytest.raises(ValidationError):
         Body(object_id="o", typo_field=1)  # type: ignore[call-arg]
+
+
+def test_timestamp_iso_context() -> None:
+    m = Stamped.model_validate({"id": "1", "createdAt": 1749927600000})
+    assert m.model_dump(mode="json", context={"timestamps": "iso"})["created_at"] == "2025-06-14T19:00:00+00:00"
+    assert m.model_dump(mode="json")["created_at"] == 1749927600000

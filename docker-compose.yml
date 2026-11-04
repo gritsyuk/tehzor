@@ -1,0 +1,20 @@
+# MCP-сервер Tehzor по HTTP (streamable-http) с токеном.
+#   TEHZOR_API_KEY=… TEHZOR_MCP_HTTP_TOKEN=$(openssl rand -hex 32) docker compose up -d
+# Клиент: URL http://<host>:8000/mcp, заголовок Authorization: Bearer <TEHZOR_MCP_HTTP_TOKEN>.
+services:
+  tehzor-mcp:
+    build: .
+    image: tehzor-mcp
+    command: ["--transport", "http"]
+    ports:
+      - "127.0.0.1:8000:8000"   # наружу открывайте только за reverse-proxy с TLS
+    environment:
+      TEHZOR_API_KEY: ${TEHZOR_API_KEY:?задайте TEHZOR_API_KEY}
+      TEHZOR_MCP_HTTP_TOKEN: ${TEHZOR_MCP_HTTP_TOKEN:?задайте TEHZOR_MCP_HTTP_TOKEN}
+      # запись выключена по умолчанию; каждая изменяющая операция всё равно требует подтверждения человеком
+      TEHZOR_MCP_ALLOW_WRITE: ${TEHZOR_MCP_ALLOW_WRITE:-0}
+    volumes:
+      - tehzor-audit:/data      # журнал аудита изменяющих операций
+    restart: unless-stopped
+volumes:
+  tehzor-audit:

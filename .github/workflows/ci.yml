@@ -53,3 +53,13 @@ jobs:
           bad = [n for n in names if not (n.startswith("tehzor/") or ".dist-info/" in n)]
           assert not bad, bad
           EOF
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t tehzor-mcp .
+      - name: сервер стартует и отвечает на initialize (stdio)
+        run: |
+          printf '%s\n' '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"ci","version":"0"}}}' \
+            | timeout 20 docker run -i --rm tehzor-mcp | head -1 | grep -q '"serverInfo"'

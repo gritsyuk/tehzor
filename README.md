@@ -41,7 +41,94 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-### Разработка
+## MCP-сервер для LLM-агентов
+
+`tehzor-mcp` публикует все 73 операции API как инструменты MCP, плюс `problems_search` (поиск нарушений
+с автопагинацией), `space_overview` (сводка по помещению) и справочники как ресурсы `tehzor://…`.
+
+### Запуск
+
+**uvx** (без установки; до публикации 0.2.0 на PyPI — из git-ветки):
+
+```bash
+uvx --from "tehzor[mcp] @ git+https://github.com/gritsyuk/tehzor@claude/hopeful-einstein-ehtyi0" tehzor-mcp
+```
+
+**Docker:**
+
+```bash
+docker build -t tehzor-mcp .
+```
+
+```bash
+docker run -i --rm -e TEHZOR_API_KEY tehzor-mcp
+```
+
+За корпоративным прокси с собственным CA сертификат передаётся только на время сборки:
+`docker build --build-arg HTTPS_PROXY --secret id=pip_ca,src=/path/to/ca.pem -t tehzor-mcp .`
+
+**HTTP (streamable-http)** — для удалённого подключения, только с токеном:
+
+```bash
+TEHZOR_API_KEY=… TEHZOR_MCP_HTTP_TOKEN=$(openssl rand -hex 32) docker compose up -d
+```
+
+Клиент подключается к `http://<host>:8000/mcp` с заголовком `Authorization: Bearer <TEHZOR_MCP_HTTP_TOKEN>`.
+Наружу публикуйте только за reverse-proxy с TLS.
+
+### Подключение
+
+Claude Code:
+
+```bash
+claude mcp add tehzor --env TEHZOR_API_KEY=… -- uvx --from "tehzor[mcp] @ git+https://github.com/gritsyuk/tehzor@claude/hopeful-einstein-ehtyi0" tehzor-mcp
+```
+
+Claude Desktop (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "tehzor": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "-e", "TEHZOR_API_KEY", "tehzor-mcp"],
+      "env": {"TEHZOR_API_KEY": "…"}
+    }
+  }
+}
+```
+
+### Запись данных и подтверждение человеком
+
+* По умолчанию **запись выключена**: изменяющие инструменты видны агенту, но отказывают и ничего не отправляют.
+  Включается `TEHZOR_MCP_ALLOW_WRITE=1`; `TEHZOR_MCP_WRITE_TOOLS=problems_create,comments_create` сужает список.
+  `TEHZOR_MCP_HIDE_WRITE=1` убирает изменяющие инструменты совсем.
+* Даже при включённой записи **каждая** изменяющая операция сначала возвращает превью (метод, путь, тело) и
+  одноразовый `confirmation_id` (живёт 10 минут). Выполнение — только после подтверждения человеком: через
+  диалог клиента (MCP elicitation) или инструмент `confirm_operation`. Отправляется ровно показанный запрос.
+* Создание никогда не повторяется автоматически (дублей не будет). Для большинства сущностей удаления в API нет.
+* Журнал аудита — `TEHZOR_MCP_AUDIT_LOG` (по умолчанию `~/.tehzor-mcp/audit.jsonl`, в Docker — том `/data`);
+  ФИО, телефоны и email маскируются, ключ не пишется.
+* Важно: при создании нарушения сервер Tehzor сам назначает исполнителей и наблюдателей по настройкам
+  объекта — они получают уведомления (см. [docs/API_FACTS.md](docs/API_FACTS.md)).
+
+### Переменные окружения
+
+| Переменная | По умолчанию | Назначение |
+|---|---|---|
+| `TEHZOR_API_KEY` | — | ключ API (можно не задавать, если заголовок `api-key` подставляет прокси) |
+| `TEHZOR_BASE_URL` | `https://api.tehzor.ru` | адрес API |
+| `TEHZOR_PROXY`, `TEHZOR_SSL_VERIFY` | —, `1` | прокси и проверка TLS; также учитываются `HTTPS_PROXY`/`NO_PROXY` |
+| `TEHZOR_RATE_LIMIT`, `TEHZOR_MAX_CONCURRENCY` | `5`, `5` | запросов в секунду и параллельно |
+| `TEHZOR_MCP_ALLOW_WRITE` | `0` | разрешить изменяющие операции (с подтверждением) |
+| `TEHZOR_MCP_WRITE_TOOLS` | все | список разрешённых изменяющих инструментов |
+| `TEHZOR_MCP_HIDE_WRITE` | `0` | не публиковать изменяющие инструменты |
+| `TEHZOR_MCP_CONFIRM_TTL` | `600` | срок жизни `confirmation_id`, с |
+| `TEHZOR_MCP_AUDIT_LOG` | `~/.tehzor-mcp/audit.jsonl` | журнал аудита |
+| `TEHZOR_MCP_TRANSPORT`, `TEHZOR_MCP_HOST`, `TEHZOR_MCP_PORT` | `stdio`, `127.0.0.1`, `8000` | транспорт |
+| `TEHZOR_MCP_HTTP_TOKEN` | — | обязательный токен для HTTP |
+
+## Разработка
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -e ".[dev]"
@@ -50,7 +137,7 @@ python -m venv .venv && .venv/bin/pip install -e ".[dev]"
 .venv/bin/pytest -m contract      # живое API, только чтение (нужны ключ и TEHZOR_SEED_OBJECT_ID)
 ```
 
-### Статус
+## Статус
 
 | Этап | Состояние |
 |---|---|
@@ -59,5 +146,5 @@ python -m venv .venv && .venv/bin/pip install -e ".[dev]"
 | 2. Модели (по фактическим ответам) | готово |
 | 3. Контрактные тесты: 49 читающих операций на живом API | готово — 53 из 53 |
 | 4. Изменяющие операции (24): `dry_run`, только на заглушках | готово — 73 из 73 операций |
-| 5. MCP-сервер | — |
+| 5. MCP-сервер: 76 инструментов, 18 ресурсов, подтверждение записи; uvx и Docker | готово |
 | 6. Релиз 0.2.0 | — |
