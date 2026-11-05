@@ -2,7 +2,7 @@
 
 Формат — [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/), версии — [SemVer](https://semver.org/lang/ru/).
 
-## [0.2.0] — 2026-11-04
+## [0.2.0] — 2026-11-05
 
 Полное переписывание. **Несовместимо с 0.1.x** — см. [docs/MIGRATION.md](docs/MIGRATION.md).
 

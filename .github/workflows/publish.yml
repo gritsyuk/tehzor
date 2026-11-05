@@ -1,6 +1,7 @@
 name: Publish to PyPI
 
 # Публикация через PyPI Trusted Publishing (OIDC): токены и пароли не нужны.
+# Правило: публикуется ТОЛЬКО коммит из ветки prod (тег vX.Y.Z на коммите prod, см. docs/RELEASING.md).
 # На PyPI настроен издатель: владелец gritsyuk, репозиторий tehzor, workflow publish.yml, среда pypi.
 # Среда `pypi` в GitHub (Settings → Environments) должна требовать ручного подтверждения (Required reviewers):
 # публикация на PyPI необратима — версию нельзя перезалить.
@@ -25,6 +26,15 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: коммит принадлежит ветке prod
+        run: |
+          git fetch --no-tags origin +refs/heads/prod:refs/remotes/origin/prod
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/prod; then
+            echo "Коммит $GITHUB_SHA не входит в ветку prod — публикация только из prod" >&2
+            exit 1
+          fi
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -60,7 +70,7 @@ jobs:
 
   publish:
     needs: build
-    if: github.ref_type == 'tag' || inputs.publish
+    if: github.ref_type == 'tag' || (inputs.publish && github.ref == 'refs/heads/prod')
     runs-on: ubuntu-latest
     environment:
       name: pypi

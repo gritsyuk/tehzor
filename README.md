@@ -1,4 +1,4 @@
-# ![logo Tehzor](https://tehzor.com/images/components/Header/logo.svg)
+# ![logo Tehzor](https://tehzor.com/wp-content/themes/tehzor/src/img/logo.svg)
 ![PyPI - Version](https://img.shields.io/pypi/v/tehzor)
 
 ## Асинхронный Python-клиент Tehzor Public API
