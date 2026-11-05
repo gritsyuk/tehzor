@@ -53,10 +53,18 @@ class Settings:
     max_limit: int = 500
     search_max_items: int = 2000
     cache_ttl: float = 3600.0
+    summary_max_items: int = 5000
+    # аналитика
+    projects: Path | None = None
+    """TEHZOR_MCP_PROJECTS — каталог MD (граф знаний) или файл JSON/YAML/CSV с соответствием объект → проект."""
+    state_dir: Path = field(default_factory=lambda: Path.home() / ".tehzor-mcp")
+    """TEHZOR_MCP_STATE_DIR — снимок объектов для «новых с прошлого обхода»."""
 
     @classmethod
     def from_env(cls) -> Settings:
         audit = os.environ.get("TEHZOR_MCP_AUDIT_LOG")
+        projects = os.environ.get("TEHZOR_MCP_PROJECTS")
+        state_dir = os.environ.get("TEHZOR_MCP_STATE_DIR")
         return cls(
             api_key=os.environ.get("TEHZOR_API_KEY") or None,
             user_id=os.environ.get("TEHZOR_USER_ID") or None,
@@ -70,4 +78,6 @@ class Settings:
             hide_write_tools=_bool("TEHZOR_MCP_HIDE_WRITE"),
             confirm_ttl=_float("TEHZOR_MCP_CONFIRM_TTL", 600.0),
             audit_log=Path(audit).expanduser() if audit else Path.home() / ".tehzor-mcp" / "audit.jsonl",
+            projects=Path(projects).expanduser() if projects else None,
+            state_dir=Path(state_dir).expanduser() if state_dir else Path.home() / ".tehzor-mcp",
         )

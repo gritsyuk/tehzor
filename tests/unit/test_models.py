@@ -74,3 +74,26 @@ def test_timestamp_iso_context() -> None:
     m = Stamped.model_validate({"id": "1", "createdAt": 1749927600000})
     assert m.model_dump(mode="json", context={"timestamps": "iso"})["created_at"] == "2025-06-14T19:00:00+00:00"
     assert m.model_dump(mode="json")["created_at"] == 1749927600000
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("1749927600000", "2025-06-14T19:00:00+00:00"),  # строку мс сервер игнорирует — переводим в ISO
+        (1749927600000, "2025-06-14T19:00:00+00:00"),
+        ("2025-06-14", "2025-06-14T00:00:00+00:00"),
+        ("2025-06-14T19:00:00Z", "2025-06-14T19:00:00+00:00"),
+        (datetime(2025, 6, 14, 19, tzinfo=timezone.utc), "2025-06-14T19:00:00+00:00"),
+    ],
+)
+def test_problem_filter_dates_sent_as_iso(value: object, expected: str) -> None:
+    from tehzor.models.problems import ProblemFilters
+
+    assert ProblemFilters(objects=["o"], modified_at_from=value).to_api()["modifiedAtFrom"] == expected  # type: ignore[arg-type]
+
+
+def test_problem_filter_bad_date_rejected() -> None:
+    from tehzor.models.problems import ProblemFilters
+
+    with pytest.raises(ValidationError):
+        ProblemFilters(modified_at_from="вчера")  # type: ignore[arg-type]

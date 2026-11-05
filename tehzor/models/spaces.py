@@ -64,7 +64,10 @@ class Space(TehzorModel):
 
 
 class SpaceFilters(TehzorRequest):
-    """Тело `POST /spaces/get-spaces`. Указывайте `objects`: без фильтра запрос тяжёлый."""
+    """Тело `POST /spaces/get-spaces`. Указывайте `objects` (только UUID): без фильтра запрос тяжёлый.
+
+    fact: `include_objects_children` сервер игнорирует — дочерние объекты передавайте явно в `objects`.
+    """
 
     objects: list[str] | None = None
     spaces: list[str] | None = None

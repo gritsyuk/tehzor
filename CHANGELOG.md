@@ -2,6 +2,26 @@
 
 Формат — [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/), версии — [SemVer](https://semver.org/lang/ru/).
 
+## [0.3.0] — 2026-11-05
+
+### Добавлено
+- `tehzor.insights`: `discover_objects()` и `ObjectTree` — все объекты компании деревом (из наборов видов работ,
+  наборов меток и чек-листов), дочерние объекты, перевод старого id объекта в UUID, «новые с прошлого обхода»;
+  `summarize_problems()` — открыто / просрочено / критично в разрезах объект, вид работ, организация, исполнитель;
+  `contractor_from_position()`; `ProjectsIndex` — соответствие «объект → проект» из каталога MD (frontmatter),
+  JSON, YAML или CSV.
+- MCP: `objects_discover`, `problems_summary`, `work_acceptances_search` (несколько объектов и статусов),
+  `projects_list`, `project_resolve`, ресурс `tehzor://objects-tree`; параметры `include_children` и `project`
+  в `problems_search`. Настройки `TEHZOR_MCP_PROJECTS`, `TEHZOR_MCP_STATE_DIR`.
+
+### Изменено
+- Промпт `problems_summary` заменён инструментом с явными правилами (открыто — waiting/handling/verification;
+  просрочено — срок в прошлом, т. к. сервер не ставит `expired`).
+
+### Исправлено
+- `ProblemFilters.modified_at_from/to`: строка мс молча игнорировалась сервером — теперь любое значение
+  отправляется как ISO 8601, неверная дата отклоняется до отправки.
+
 ## [0.2.0] — 2026-11-05
 
 Полное переписывание. **Несовместимо с 0.1.x** — см. [docs/MIGRATION.md](docs/MIGRATION.md).

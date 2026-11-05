@@ -29,7 +29,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-mcp = ["mcp>=1.2,<2"]
+mcp = ["mcp>=1.2,<2", "pyyaml>=6"]
 dev = [
     "mcp>=1.2,<2",
     "pytest>=8",

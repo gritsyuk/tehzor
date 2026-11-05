@@ -69,6 +69,26 @@
 | `status` | `{id, name, stage}` | совпадает |
 | `type` | `{id, name, singularName}` | совпадает |
 
+## Объекты компании и дочерние объекты (2026-11-05)
+
+| Факт | Следствие |
+|---|---|
+| Метода «все объекты» нет; объекты перечислены в `/categories-sets` (81), `/tags-sets` (85), `/check-lists` (36) — 87 уникальных, все читаются через `/objects/{id}` | `tehzor.insights.discover_objects()` / MCP `objects_discover`; объект без наборов и чек-листов не будет найден |
+| `parentId` объекта — UUID; 9 корней (ЖК), 78 дочерних, у всех родитель найден | дерево `ObjectTree` |
+| `includeObjectsChildren: true` в `/problems/get-problems` и `/spaces/get-spaces` **игнорируется** (0 нарушений дочерних при флаге по корню) | дочерние передаются явно в `objects` (MCP: `include_children`) |
+| `objects=[корень, …14 дочерних]` работает (50 нарушений по 9 объектам за запрос) | один запрос на список объектов |
+| `objects` принимает **только UUID**: старый 24-hex id → 400 «each value in objects must be a UUID» | старые id переводятся в UUID по дереву (`ObjectTree.resolve`) |
+| `/work-acceptances/get-work-acceptances`, `/internal-acceptances/get-internal-acceptances` — один `objectId`; фильтр `status` приёмок — одно значение | MCP `work_acceptances_search`: запрос на объект × статус, объединение |
+
+## Статусы и даты фильтра нарушений (2026-11-05)
+
+| Факт | Следствие |
+|---|---|
+| Справочник `/problem-statuses`: waiting, handling, verification, fixed, closed — **без `expired`**; `statuses=["expired"]` → 0, хотя у 554 из 600 открытых срок прошёл | просрочка считается по `plannedFixDate` (`tehzor.insights.is_overdue`); контрактный тест сигналит, если сервер начнёт ставить `expired` |
+| `modifiedAtFrom`: ISO 8601 и `YYYY-MM-DD` применяются, число мс применяется, **строка из цифр (мс) молча игнорируется** (возвращается всё) | `ProblemFilters.modified_at_*` всегда отправляются строкой ISO 8601 |
+| У нарушения 0–13 исполнителей (чаще 5); `reopenedTimes` в 600 открытых не встретился | в сводке по исполнителю/организации — `multi_count`; метрик «устранено за период» нет (истории статусов нет) |
+| Должность исполнителя: «Должность, Организация» / «ООО "…"», разные кавычки и NBSP | `contractor_from_position` нормализует; только для группировки |
+
 ## Недокументированные методы
 
 | Метод | Статус |

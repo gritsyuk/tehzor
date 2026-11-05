@@ -30,10 +30,11 @@ from .. import errors
 from .._registry import REGISTRY, Operation
 from .._transport import PreparedRequest
 from ..client import TehzorClient
-from ..models.problems import ProblemFilters
+from ..insights import ObjectTree, ProjectsIndex
 from .audit import AuditLog
 from .config import Settings
 from .confirm import PendingStore
+from .insights_tools import register_insights
 
 INSTRUCTIONS = """\
 Инструменты Tehzor — системы строительного контроля и приёмки квартир.
@@ -41,6 +42,9 @@ INSTRUCTIONS = """\
 - Списки ВСЕГДА фильтруйте по объекту (objects / object_id): без фильтра сервер не справляется.
   Ответ списка: {items, count, offset, next_offset}; следующая страница — offset=next_offset.
 - Справочники (статусы, типы, стадии) доступны как ресурсы tehzor://… и инструменты *_statuses / *_types.
+- Все объекты компании деревом — objects_discover; по коду проекта — project_resolve (если заданы соответствия).
+- Корпуса и секции сервер сам не учитывает: в problems_search / problems_summary / work_acceptances_search
+  передавайте include_children=true. Сводка открытых/просроченных/критичных — problems_summary (правила внутри).
 - Изменяющие инструменты (создание, изменение, смена статуса, удаление) НЕ выполняются сразу: они возвращают
   превью и confirmation_id. Покажите превью пользователю и вызывайте confirm_operation ТОЛЬКО после его явного
   согласия. Удаление необратимо; для большинства сущностей удаления в API нет вовсе.
@@ -61,10 +65,16 @@ class State:
     sessions: int = 0
     owns_client: bool = False
     lock: asyncio.Lock = field(default_factory=asyncio.Lock)
+    tree: ObjectTree | None = None
+    tree_at: float = 0.0
+    tree_diff: tuple[list[str], list[str]] = ([], [])
+    tree_lock: asyncio.Lock = field(default_factory=asyncio.Lock)
+    projects: ProjectsIndex = field(init=False)
 
     def __post_init__(self) -> None:
         self.pending = PendingStore(self.settings.confirm_ttl)
         self.audit = AuditLog(self.settings.audit_log)
+        self.projects = ProjectsIndex(self.settings.projects)
 
     def require_client(self) -> TehzorClient:
         if self.client is None:
@@ -449,54 +459,6 @@ def create_server(
                 raise tool_error(exc) from exc
 
     @mcp.tool(
-        name="problems_search",
-        description="Нарушения по объектам с автопагинацией (до 2000). Возвращает компактный список: id, номер, "
-        "статус, стадия, вид работ, помещение, срок, критичность, начало описания.",
-        annotations=ToolAnnotations(title="Поиск нарушений", readOnlyHint=True, openWorldHint=True),
-        structured_output=False,
-    )
-    async def problems_search(
-        objects: list[str],
-        statuses: list[str] | None = None,
-        spaces: list[str] | None = None,
-        modified_at_from: str | None = None,
-        modified_at_to: str | None = None,
-        limit: int = 200,
-    ) -> str:
-        if not objects:
-            raise ToolError("укажите objects")
-        if limit < 1 or limit > s.search_max_items:
-            raise ToolError(f"limit должен быть от 1 до {s.search_max_items}")
-        try:
-            filters = ProblemFilters(
-                objects=objects,
-                statuses=statuses,
-                spaces=spaces,
-                modified_at_from=modified_at_from,
-                modified_at_to=modified_at_to,
-            )
-            items = [p async for p in state.require_client().problems.iter(filters, max_items=limit)]
-        except Exception as exc:
-            raise tool_error(exc) from exc
-        compact = [
-            {
-                "id": p.id,
-                "number": p.number,
-                "status": p.status.name if p.status else None,
-                "status_id": p.status.id if p.status else None,
-                "stage": p.stage,
-                "category": p.category.name if p.category else None,
-                "space": p.space.name if p.space else None,
-                "space_id": p.space.id if p.space else None,
-                "planned_fix_date": p.planned_fix_date.isoformat() if p.planned_fix_date else None,
-                "critical": p.critical,
-                "description": (p.description or "")[:200] or None,
-            }
-            for p in items
-        ]
-        return dumps({"items": compact, "count": len(compact), "truncated": len(compact) == limit})
-
-    @mcp.tool(
         name="space_overview",
         description="Сводка по помещению: карточка, статус, приборы учёта, передачи собственникам, "
         "гарантийные обращения — одним вызовом.",
@@ -522,13 +484,7 @@ def create_server(
     for uri, (resource, method, title) in DICTIONARIES.items():
         _add_dictionary(mcp, state, uri, resource, method, title)
 
-    @mcp.prompt(name="problems_summary", description="Сводка нарушений по объекту")
-    def problems_summary(object_id: str) -> str:
-        return (
-            f"Сделай сводку нарушений по объекту {object_id}: используй problems_search, сгруппируй по статусу "
-            "и виду работ, выдели просроченные (срок устранения в прошлом, статус не закрыт) и критичные. "
-            "Ничего не изменяй в системе."
-        )
+    register_insights(mcp, state, dumps, tool_error)
 
     return mcp
 

@@ -30,6 +30,7 @@ def data(result: types.CallToolResult) -> Any:
 
 
 def settings(tmp_path: Path, **kw: Any) -> Settings:
+    kw.setdefault("state_dir", tmp_path / "state")
     return Settings(audit_log=tmp_path / "audit.jsonl", **kw)
 
 
@@ -62,7 +63,9 @@ async def test_tools_cover_registry(make_session: Any, mocked: aioresponses) -> 
         tools = {t.name: t for t in (await session.list_tools()).tools}
     expected = {op.tool_name for op in REGISTRY.all() if op.mcp}
     assert len(expected) == 73
-    assert set(tools) == expected | {"confirm_operation", "problems_search", "space_overview"}
+    extra = {"confirm_operation", "problems_search", "space_overview", "objects_discover", "problems_summary",
+             "work_acceptances_search", "projects_list", "project_resolve"}
+    assert set(tools) == expected | extra
     for op in REGISTRY.all():
         if not op.mcp:
             continue
@@ -98,7 +101,7 @@ async def test_dictionary_resource_cached(make_session: Any, mocked: aioresponse
     mocked.get(f"{BASE}/problem-statuses", payload=[{"id": "waiting", "name": "К устранению"}])
     async with await make_session() as session:
         uris = {str(r.uri) for r in (await session.list_resources()).resources}
-        assert "tehzor://problem-statuses" in uris and len(uris) == 18
+        assert "tehzor://problem-statuses" in uris and "tehzor://objects-tree" in uris and len(uris) == 19
         for _ in range(2):
             res = await session.read_resource("tehzor://problem-statuses")  # type: ignore[arg-type]
             assert json.loads(res.contents[0].text) == [{"id": "waiting", "name": "К устранению"}]  # type: ignore[union-attr]

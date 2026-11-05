@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from ..enums import ProblemStatus, ProcessId, Stage
-from ..types import Timestamp
+from ..types import IsoDate, Timestamp
 from ._base import TehzorModel, TehzorRequest
 from .common import AttachmentList, ExternalRef, Location, NamedRef, Reason, User
 
@@ -81,14 +81,16 @@ class ProblemFilters(TehzorRequest):
     """Тело `POST /problems/get-problems`.
 
     Указывайте `objects`: fact — без фильтра запрос даёт 502 примерно через 30 с.
-    `modified_at_from/to`: spec — строка; формат на живом API ещё не подтверждён.
+    `modified_at_from/to`: datetime, ISO 8601, YYYY-MM-DD или мс — всегда отправляется как ISO 8601
+    (fact: строку из цифр сервер молча игнорирует). `include_objects_children` сервер ИГНОРИРУЕТ (fact) —
+    дочерние объекты передавайте явно в `objects` (в MCP — параметр include_children). `objects` — только UUID.
     """
 
     objects: list[str] | None = None
     include_objects_children: bool | None = None
     spaces: list[str] | None = None
-    modified_at_from: str | int | None = None
-    modified_at_to: str | int | None = None
+    modified_at_from: IsoDate | None = None
+    modified_at_to: IsoDate | None = None
     statuses: list[ProblemStatus | str] | None = None
 
 
