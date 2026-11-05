@@ -17,6 +17,9 @@
    git push origin vX.Y.Z
    ```
 
+   Или в GitHub: **Releases → Draft a new release → Choose a tag: `vX.Y.Z` (Create new tag) → Target: `prod` →
+   Publish release** — workflow запустится так же и дополнит релиз файлами сборки и описанием из CHANGELOG.
+
 4. Workflow: проверки (ruff, mypy, тесты) → тег совпадает с версией → сборка и `twine check` → **ожидание
    подтверждения в среде `pypi`** → публикация на PyPI (Trusted Publishing, без токенов) → GitHub Release с
    разделом CHANGELOG.

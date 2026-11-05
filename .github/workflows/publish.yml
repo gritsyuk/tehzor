@@ -102,4 +102,11 @@ jobs:
           awk -v v="## [$VERSION]" 'index($0, v)==1 {f=1; next} /^## \[/ && f {exit} f' CHANGELOG.md > notes.md
       - env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/* --title "tehzor $GITHUB_REF_NAME" --notes-file notes.md
+        # релиз мог быть создан вручную в GitHub (Releases → Draft a new release) — тогда только дополняем его
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/* --clobber
+            gh release edit "$GITHUB_REF_NAME" --notes-file notes.md
+          else
+            gh release create "$GITHUB_REF_NAME" dist/* --title "tehzor $GITHUB_REF_NAME" --notes-file notes.md
+          fi
