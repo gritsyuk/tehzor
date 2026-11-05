@@ -203,12 +203,30 @@ def test_projects_minimal_yaml_without_pyyaml(tmp_path: Path, monkeypatch: pytes
     assert ProjectsIndex(tmp_path).find("SIG")[0].objects == [ROOT, OTHER]
 
 
+def test_yaml_file_without_pyyaml_reports_error(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Без PyYAML файл .yaml не должен молча давать пустой индекс (так упал CI 0.3.0)."""
+    import builtins
+
+    real_import = builtins.__import__
+
+    def no_yaml(name: str, *args: object, **kwargs: object) -> object:
+        if name == "yaml":
+            raise ImportError
+        return real_import(name, *args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(builtins, "__import__", no_yaml)
+    (tmp_path / "p.yaml").write_text(f"- code: PARK\n  objects: [{OTHER}]\n", encoding="utf-8")
+    idx = ProjectsIndex(tmp_path / "p.yaml")
+    assert idx.projects == [] and idx.errors and "PyYAML" in idx.errors[0]
+
+
 def test_projects_json_csv_yaml(tmp_path: Path) -> None:
     (tmp_path / "p.json").write_text(json.dumps({"SIG": {"name": "Сигнал", "objects": [ROOT]}}), encoding="utf-8")
     assert ProjectsIndex(tmp_path / "p.json").find("SIG")[0].objects == [ROOT]
     (tmp_path / "p.csv").write_text(f"object_id,project_code,project_name\n{ROOT},SIG,Сигнал\n{K1},SIG,\n",
                                     encoding="utf-8")
     assert ProjectsIndex(tmp_path / "p.csv").find("SIG")[0].objects == [ROOT, K1]
+    pytest.importorskip("yaml")
     (tmp_path / "p.yaml").write_text(f"- code: PARK\n  objects: [{OTHER}]\n", encoding="utf-8")
     assert ProjectsIndex(tmp_path / "p.yaml").find("park")[0].objects == [OTHER]
 

@@ -58,11 +58,23 @@ def _first(d: dict[str, Any], keys: tuple[str, ...]) -> Any:
     return next((d[k] for k in keys if d.get(k) not in (None, "")), None)
 
 
-def _load_yaml(text: str) -> Any:
+def _load_frontmatter(text: str) -> Any:
+    """Frontmatter MD: PyYAML, если установлен, иначе простой разбор (key: value, списки) — его хватает."""
     try:
-        import yaml  # type: ignore[import-untyped]
+        import yaml
     except ImportError:
         return _mini_yaml(text)
+    return yaml.safe_load(text)
+
+
+def _load_yaml_file(text: str) -> Any:
+    """Файл .yaml/.yml — только PyYAML: упрощённый разбор не понимает списки записей и дал бы пустой индекс."""
+    try:
+        import yaml
+    except ImportError:
+        raise RuntimeError(
+            'для файла .yaml нужен PyYAML: pip install "tehzor[mcp]" (или pyyaml); либо используйте JSON, CSV или MD'
+        ) from None
     return yaml.safe_load(text)
 
 
@@ -106,7 +118,7 @@ def _from_markdown(path: Path) -> Project | None:
     m = re.match(r"^---\s*\n(.*?)\n---\s*\n?(.*)$", text, re.S)
     if not m:
         return None
-    meta = _load_yaml(m.group(1))
+    meta = _load_frontmatter(m.group(1))
     if not isinstance(meta, dict):
         return None
     if not (_first(meta, CODE_KEYS) or _first(meta, OBJECT_KEYS)):
@@ -137,7 +149,7 @@ def _from_table(path: Path) -> list[Project]:
                 p.objects.extend(_as_list(row.get("object_id") or row.get("objects")))
         return list(projects.values())
     text = path.read_text(encoding="utf-8")
-    data = json.loads(text) if path.suffix.lower() == ".json" else _load_yaml(text)
+    data = json.loads(text) if path.suffix.lower() == ".json" else _load_yaml_file(text)
     if isinstance(data, dict):
         data = [{"code": k, **(v if isinstance(v, dict) else {"objects": v})} for k, v in data.items()]
     result = []
